@@ -261,3 +261,63 @@
 .prose h1, .prose h2, .prose h3, .prose h4, .prose strong {
   color: var(--sl-color-text-primary) !important;
 }
+
+/* ─── Animated Logo & Floating Hero Image ────────────────────────────── */
+@keyframes heroLogoFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+    filter: drop-shadow(0 10px 20px rgba(139, 92, 246, 0.35));
+  }
+  50% {
+    transform: translateY(-14px) rotate(1.5deg) scale(1.03);
+    filter: drop-shadow(0 25px 35px rgba(192, 132, 252, 0.7)) drop-shadow(0 0 15px rgba(56, 189, 248, 0.45));
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+    filter: drop-shadow(0 10px 20px rgba(139, 92, 246, 0.35));
+  }
+}
+
+@keyframes logoGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 22px rgba(192, 132, 252, 0.85)) drop-shadow(0 0 12px rgba(96, 165, 250, 0.6));
+  }
+}
+
+/* Hero Logo Animation */
+.hero img,
+[data-hero-image],
+.hero-image img,
+.hero-html img,
+img[src*="LogoWhite"],
+img[src*="logoblack"] {
+  animation: heroLogoFloat 4s ease-in-out infinite !important;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform-origin: center center !important;
+  cursor: pointer;
+}
+
+.hero img:hover,
+img[src*="LogoWhite"]:hover,
+img[src*="logoblack"]:hover {
+  animation-play-state: paused !important;
+  transform: scale(1.08) rotate(3deg) translateY(-8px) !important;
+  filter: drop-shadow(0 30px 45px rgba(168, 85, 247, 0.85)) drop-shadow(0 0 25px rgba(56, 189, 248, 0.75)) !important;
+}
+
+/* Header Navbar Logo Animation */
+header img,
+.site-title img,
+a[href="/"] img,
+a[href="/docs/"] img {
+  animation: logoGlowPulse 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+header img:hover,
+.site-title img:hover {
+  transform: scale(1.1) rotate(-4deg);
+}

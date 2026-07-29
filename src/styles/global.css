@@ -77,23 +77,24 @@
     color: var(--sl-color-text-muted);
   }
   .sidebar-link:hover {
-    color: var(--sl-color-text-primary);
-    background-color: rgba(255, 255, 255, 0.04);
+    color: #000000 !important;
+    background-color: var(--sl-color-accent-high);
   }
   .sidebar-link.active {
-    color: #ffffff;
-    background-color: var(--sl-color-accent-low);
-    font-weight: 500;
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: #000000 !important;
+    background-color: var(--sl-color-accent-high);
+    font-weight: 700;
+    border: 1px solid rgba(139, 92, 246, 0.5);
   }
   
   .light .sidebar-link:hover {
-    background-color: rgba(0, 0, 0, 0.04);
+    color: #000000 !important;
+    background-color: rgba(0, 0, 0, 0.08);
   }
   .light .sidebar-link.active {
-    color: var(--sl-color-accent-high);
+    color: #000000 !important;
     background-color: var(--sl-color-accent-low);
-    border-color: rgba(109, 40, 217, 0.2);
+    border-color: rgba(109, 40, 217, 0.3);
   }
 
   /* Method Badges */
@@ -287,13 +288,11 @@
   }
 }
 
-/* Hero Logo Animation */
+/* Hero Logo Floating Animation (Home Page Hero Only) */
 .hero img,
-[data-hero-image],
 .hero-image img,
-.hero-html img,
-img[src*="LogoWhite"],
-img[src*="logoblack"] {
+[data-hero-image],
+.hero-html img {
   animation: heroLogoFloat 4s ease-in-out infinite !important;
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
   transform-origin: center center !important;
@@ -301,23 +300,52 @@ img[src*="logoblack"] {
 }
 
 .hero img:hover,
-img[src*="LogoWhite"]:hover,
-img[src*="logoblack"]:hover {
+.hero-image img:hover,
+[data-hero-image]:hover {
   animation-play-state: paused !important;
   transform: scale(1.08) rotate(3deg) translateY(-8px) !important;
   filter: drop-shadow(0 30px 45px rgba(168, 85, 247, 0.85)) drop-shadow(0 0 25px rgba(56, 189, 248, 0.75)) !important;
 }
 
-/* Header Navbar Logo Animation */
+/* Header Navbar Logo - Keep Static without Animation */
 header img,
 .site-title img,
-a[href="/"] img,
-a[href="/docs/"] img {
-  animation: logoGlowPulse 3s ease-in-out infinite;
-  transition: transform 0.3s ease;
+.site-title svg,
+header .logo img,
+nav img {
+  animation: none !important;
+  filter: none !important;
+  transform: none !important;
+  transition: none !important;
 }
 
-header img:hover,
-.site-title img:hover {
-  transform: scale(1.1) rotate(-4deg);
+/* ─── Starlight Sidebar Active & Hover Link Text Color (Black Text on Hover/Active) ─── */
+aside a:hover,
+aside a:focus,
+aside a[aria-current="page"],
+aside a[aria-current="true"],
+.sidebar-pane a:hover,
+.sidebar-pane a:focus,
+.sidebar-pane a[aria-current="page"],
+.sidebar-pane a[aria-current="true"],
+starlight-sidebar a:hover,
+starlight-sidebar a:focus,
+starlight-sidebar a[aria-current="page"],
+starlight-sidebar a[aria-current="true"],
+.sl-sidebar a:hover,
+.sl-sidebar a[aria-current="page"] {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+aside a:hover span,
+aside a[aria-current="page"] span,
+aside a[aria-current="true"] span,
+.sidebar-pane a:hover span,
+.sidebar-pane a[aria-current="page"] span,
+.sidebar-pane a[aria-current="true"] span,
+starlight-sidebar a:hover span,
+starlight-sidebar a[aria-current="page"] span,
+starlight-sidebar a[aria-current="true"] span {
+  color: #000000 !important;
 }

@@ -1,117 +1,113 @@
 # Scheduler API
 
-## Overview
+> **Overview**: The Scheduler API handles the background automation engine responsible for processing scheduled social media posts, executing cron tasks, retrying failed broadcasts, and managing task queues.
 
-The scheduler manages automatic publishing of scheduled social media posts.
+---
+
+## Key Capabilities
+
+- **Schedule Creation**: Queue social media posts for future execution.
+- **Background Cron Trigger**: Internal or external cron runner trigger to execute due posts.
+- **Failover & Retries**: Automatic exponential backoff retries (up to 3 attempts per post).
+
+---
+
+## Authentication & Security
+
+- User scheduling actions require a valid Bearer JWT.
+- System runner endpoint (`POST /api/social/scheduler/run`) uses a secret cron token header (`X-Cron-Secret` or `CRON_SECRET` env check) to prevent unauthorized executions.
+
+---
 
 ## Endpoints
 
-### `POST /api/social/scheduler/run`
+### `POST /api/social/schedule`
 
-Trigger the scheduler to process all pending posts whose scheduled time has passed.
+Schedules a social post payload for publishing at a future timestamp.
 
-**Authentication:** No (internal endpoint)
+**Authentication**: Required (User Bearer Token)
 
-**Behavior:**
+**Request Body**:
 
-1. Queries all `scheduled_posts` with `status = 'Scheduled'` and `scheduled_time <= now`
-2. For each pending post:
-   - Fetches the parent post and social account
-   - Publishes via the social provider
-   - Updates status to `Published` or retries on failure
-   - Retries up to **3 times** before marking as `Failed`
-3. Updates parent post status when all scheduled instances complete
+```json
+{
+  "content": "Excited to launch our new UI UX design services! Check out our portfolio.",
+  "platforms": ["linkedin", "bluesky"],
+  "scheduledAt": "2026-07-30T15:00:00.000Z",
+  "mediaIds": ["98765432-abcd-ef01-2345-6789abcdef01"]
+}
+```
 
-**Success Response (200):**
+**Success Response (200 OK)**:
 
 ```json
 {
   "success": true,
-  "processedCount": 2,
-  "results": [
-    {
-      "id": "scheduled-post-uuid",
-      "success": true
-    },
-    {
-      "id": "scheduled-post-uuid-2",
-      "success": false,
-      "error": "Rate limited by provider"
-    }
-  ]
+  "data": {
+    "scheduleId": "sch_1234567890",
+    "status": "scheduled",
+    "scheduledAt": "2026-07-30T15:00:00.000Z",
+    "platforms": ["linkedin", "bluesky"]
+  }
 }
-```
-
-**Retry Logic:**
-
-| Attempt | Behavior |
-|---------|----------|
-| 1st failure | Retry after re-scheduling |
-| 2nd failure | Retry after re-scheduling |
-| 3rd failure | Mark as `Failed` |
-
-**Status Transitions:**
-
-```
-Scheduled → Publishing → Published
-                     └→ Scheduled (retry)
-                     └→ Failed (after 3 retries)
 ```
 
 ---
 
-## How Scheduling Works
+### `POST /api/social/scheduler/run`
 
-### 1. User Schedules a Post
+Triggers the execution worker to pick up and broadcast all due posts whose `scheduledAt <= NOW()` and status is `pending`.
 
-```bash
-POST /api/social/schedule
+**Authentication**: Secret Cron Token Header (`X-Cron-Secret`)
+
+**Request Headers**:
+
+| Header | Description |
+|--------|-------------|
+| `X-Cron-Secret` | System cron authorization token |
+
+**Success Response (200 OK)**:
+
+```json
 {
-  "content": "Check out our new feature!",
-  "scheduledTime": "2026-08-01T10:00:00Z",
-  "accountIds": ["account-1", "account-2"]
+  "success": true,
+  "data": {
+    "processedCount": 4,
+    "successfulCount": 4,
+    "failedCount": 0,
+    "executedAt": "2026-07-30T15:00:01.200Z"
+  }
 }
 ```
 
-### 2. System Creates Records
+**cURL Example**:
 
-- Creates a `posts` record with `status: 'Scheduled'`
-- Creates a `scheduled_posts` record for each account
-- Queues a background job with calculated delay
-
-### 3. Background Job Fires
-
-When the scheduled time arrives, the job triggers `POST /api/social/scheduler/run`.
-
-### 4. Scheduler Processes
-
-The scheduler fetches pending posts and publishes them via each social provider.
-
-### 5. Status Updates
-
-- Success: `Published`
-- Failure: Retry up to 3 times, then `Failed`
-- Parent post status updated when all instances complete
-
-## Job Queue Integration
-
-The scheduler uses an in-process job queue:
-
-```typescript
-// When a post is scheduled
-const delayMs = new Date(scheduledTime).getTime() - Date.now();
-socialPostQueue.add('publish-post', { scheduledPostId: record.id }, Math.max(0, delayMs));
+```bash
+curl -X POST https://api.gigpilot.ai/api/social/scheduler/run \
+  -H "X-Cron-Secret: YOUR_CRON_SECRET_KEY"
 ```
 
-## Automation
+---
 
-The scheduler can be triggered:
+## Scheduler Worker Execution Logic
 
-1. **Automatically** via the job queue (when scheduled time arrives)
-2. **Manually** via `POST /api/social/scheduler/run`
-3. **Periodically** via an external cron job calling the scheduler endpoint
+```mermaid
+flowchart TD
+    A[Cron Trigger] --> B{Verify X-Cron-Secret}
+    B -- Invalid --> C[401 Unauthorized]
+    B -- Valid --> D[Fetch pending posts where scheduledAt <= NOW]
+    D --> E[Loop through posts]
+    E --> F[Publish to target platforms]
+    F -- Success --> G[Mark status = published]
+    F -- Failure --> H{Retry count < 3?}
+    H -- Yes --> I[Increment retry count & schedule exponential retry]
+    H -- No --> J[Mark status = failed & trigger notification]
+```
 
-## Related
+---
+
+## Related Documentation
 
 - [Social API](social.md)
-- [Architecture](../ARCHITECTURE.md)
+- [Notifications API](notifications.md)
+- [Architecture Guide](../ARCHITECTURE.md)

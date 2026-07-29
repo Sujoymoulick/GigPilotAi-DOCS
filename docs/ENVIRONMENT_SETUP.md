@@ -1,6 +1,8 @@
-# GigPilot AI Environment Variables & Setup Guide
+# Environment Setup & Variables Guide
 
-This document lists all environment variables used by the GigPilot AI SaaS backend, their validation rules, and local setup.
+> **Overview**: This document lists all environment variables required by the GigPilot AI backend and frontend applications, detailing Zod validation rules, required secrets, fallback defaults, and local setup steps.
+
+---
 
 ## Variable Validation Schema
 

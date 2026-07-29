@@ -1,6 +1,8 @@
 # GigPilot AI SaaS Deployment Guide
 
-This guide details the steps to deploy the frontend, backend, database, cache, and background queue workers of GigPilot AI in a production environment.
+> **Overview**: This production deployment guide provides step-by-step instructions for provisioning Supabase database migrations, deploying the Fastify API backend to Render.com, deploying the Astro SSR frontend to Cloudflare Pages / Workers, and setting up Upstash Redis caching.
+
+---
 
 ## 1. Database Setup (Supabase)
 

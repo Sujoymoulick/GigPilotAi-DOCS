@@ -1,0 +1,53 @@
+---
+import type { NavItem } from '../lib/navigation';
+
+export interface Props {
+  prev: NavItem | null;
+  next: NavItem | null;
+}
+const { prev, next } = Astro.props;
+---
+
+{(prev || next) && (
+  <nav
+    class="flex items-center justify-between pt-8 mt-8
+           border-t border-dark-200 dark:border-dark-700"
+    aria-label="Documentation navigation"
+  >
+    {prev ? (
+      <a
+        href={prev.href}
+        class="flex flex-col gap-1 group max-w-[45%]"
+        rel="prev"
+      >
+        <span class="text-xs text-dark-400 dark:text-dark-500 flex items-center gap-1 group-hover:text-brand-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Previous
+        </span>
+        <span class="text-sm font-semibold text-dark-700 dark:text-dark-300 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors truncate">
+          {prev.label}
+        </span>
+      </a>
+    ) : <span />}
+
+    {next ? (
+      <a
+        href={next.href}
+        class="flex flex-col gap-1 items-end group max-w-[45%] ml-auto"
+        rel="next"
+      >
+        <span class="text-xs text-dark-400 dark:text-dark-500 flex items-center gap-1 group-hover:text-brand-500 transition-colors">
+          Next
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+        <span class="text-sm font-semibold text-dark-700 dark:text-dark-300 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors truncate">
+          {next.label}
+        </span>
+      </a>
+    ) : <span />}
+  </nav>
+)}

@@ -1,5 +1,17 @@
 # Auth API
 
+> **Overview**: The Auth API manages user authentication, profile synchronization, passwordless magic link logins, and user session verification integrated with Supabase Authentication.
+
+---
+
+## Key Capabilities
+
+- **Profile Sync & Login**: Authenticate users and sync Supabase user state with the local PostgreSQL database.
+- **Magic Links**: Generate passwordless authentication URLs for seamless sign-in.
+- **Session Verification**: Retrieve authenticated user details, credit balances, and role assignments.
+
+---
+
 ## Endpoints
 
 ### `POST /api/auth/login`

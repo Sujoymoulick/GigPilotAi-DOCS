@@ -1,0 +1,178 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Footer from '../components/Footer.astro';
+import { buildNavigation } from '../lib/navigation';
+
+export interface Props {
+  title:        string;
+  description?: string;
+  slug?:        string;
+  isHome?:      boolean;
+}
+
+const { title, description, slug, isHome = false } = Astro.props;
+const nav      = buildNavigation();
+const siteUrl  = Astro.site ?? new URL(Astro.request.url).origin;
+const ogTitle  = `${title} — GigPilot AI Docs`;
+const ogDesc   = description ?? 'GigPilot AI API Documentation — Complete reference for all endpoints, authentication, SDKs, and integrations.';
+const canonical = new URL(Astro.request.url, siteUrl).href;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <title>{ogTitle}</title>
+  <meta name="description" content={ogDesc} />
+  <link rel="canonical" href={canonical} />
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content={ogTitle} />
+  <meta property="og:description" content={ogDesc} />
+  <meta property="og:url"         content={canonical} />
+  <meta property="og:image"       content="/og-image.png" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content={ogTitle} />
+  <meta name="twitter:description" content={ogDesc} />
+
+  <!-- Prevent FOUC: default dark (Starlight style) -->
+  <script is:inline>
+    (function () {
+      var saved = localStorage.getItem('cf-theme');
+      if (saved === 'light') {
+        document.documentElement.classList.add('light');
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+      }
+    })();
+  </script>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type":    "TechArticle",
+    "headline": title,
+    "description": ogDesc,
+    "url": canonical,
+    "publisher": { "@type": "Organization", "name": "GigPilot AI", "url": "https://gigpilot.ai" }
+  })} />
+</head>
+
+<body class="bg-sl-bg text-sl-gray-300 font-sans">
+
+  <!-- Reading progress -->
+  <div id="reading-progress" class="reading-progress" style="width:0%;"></div>
+
+  <!-- Fixed Header -->
+  <Header currentSlug={slug} isHome={isHome} />
+
+  <!-- Main layout wrapper -->
+  <div class="flex" style="padding-top:64px; min-height:100vh;">
+
+    <!-- Mobile overlay -->
+    {!isHome && (
+      <div id="sidebar-overlay" class="fixed inset-0 z-30 hidden lg:hidden" style="background:rgba(0,0,0,0.6);" aria-hidden="true"></div>
+    )}
+
+    <!-- Sidebar -->
+    {!isHome && (
+      <aside
+        id="sidebar"
+        class="fixed top-[64px] left-0 bottom-0 z-40 w-[260px] overflow-y-auto scrollbar-hide
+               lg:translate-x-0 -translate-x-full transition-transform duration-300"
+        style="background: var(--sl-color-bg-sidebar); border-right: 1px solid var(--sl-color-border);"
+        aria-label="Sidebar navigation"
+      >
+        <Sidebar nav={nav} currentSlug={slug ?? ''} />
+      </aside>
+    )}
+
+    <!-- Main content -->
+    <main id="main-content" class={`flex-1 min-w-0 ${isHome ? '' : 'lg:ml-[260px]'}`} role="main">
+      <slot />
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <div class={isHome ? '' : 'lg:ml-[260px]'}>
+    <Footer />
+  </div>
+
+  <!-- Scroll to top -->
+  <button
+    id="scroll-top"
+    class="fixed bottom-8 right-8 p-2.5 rounded-lg z-50 transition-all duration-200"
+    style="background: var(--sl-color-accent); color: #fff; opacity:0; pointer-events:none; box-shadow: 0 0 16px rgba(139, 92, 246, 0.4);"
+    aria-label="Scroll to top"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
+    </svg>
+  </button>
+
+  <script>
+    // Reading progress
+    const progressEl = document.getElementById('reading-progress');
+    window.addEventListener('scroll', () => {
+      if (!progressEl) return;
+      const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      progressEl.style.width = Math.min(pct, 100) + '%';
+    }, { passive: true });
+
+    // Mobile sidebar
+    const btn     = document.getElementById('mobile-menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    function openNav()  { sidebar?.classList.remove('-translate-x-full'); overlay?.classList.remove('hidden'); document.body.style.overflow='hidden'; btn?.setAttribute('aria-expanded','true'); }
+    function closeNav() { sidebar?.classList.add('-translate-x-full');    overlay?.classList.add('hidden');    document.body.style.overflow='';       btn?.setAttribute('aria-expanded','false'); }
+    btn?.addEventListener('click', () => btn.getAttribute('aria-expanded')==='true' ? closeNav() : openNav());
+    overlay?.addEventListener('click', closeNav);
+    document.addEventListener('keydown', e => { if (e.key==='Escape') closeNav(); });
+
+    // Scroll to top
+    const topBtn = document.getElementById('scroll-top');
+    window.addEventListener('scroll', () => {
+      if (!topBtn) return;
+      topBtn.style.opacity = window.scrollY > 400 ? '1' : '0';
+      topBtn.style.pointerEvents = window.scrollY > 400 ? 'auto' : 'none';
+    }, { passive: true });
+    topBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // TOC highlight via IntersectionObserver
+    const tocLinks = document.querySelectorAll('.toc-link');
+    if (tocLinks.length) {
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            tocLinks.forEach(l => {
+              const isThis = l.getAttribute('href') === '#' + e.target.id;
+              if (isThis) {
+                l.classList.add('active');
+              } else {
+                l.classList.remove('active');
+              }
+            });
+          }
+        });
+      }, { rootMargin: '-10% 0px -75% 0px' });
+      document.querySelectorAll('h2[id], h3[id]').forEach(h => obs.observe(h));
+    }
+
+    // Code copy buttons
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const code = btn.closest('.code-block-wrapper')?.querySelector('pre code')?.textContent ?? '';
+        await navigator.clipboard.writeText(code).catch(() => {});
+        btn.textContent = 'Copied!';
+        setTimeout(() => (btn.textContent = 'Copy'), 2000);
+      });
+    });
+  </script>
+</body>
+</html>

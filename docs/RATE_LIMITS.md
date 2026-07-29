@@ -1,93 +1,95 @@
-# Rate Limits
+# Rate Limits Specification
 
-## Overview
+> **Overview**: GigPilot AI enforces rate limits on API traffic using `@fastify/rate-limit` with an Upstash Redis backing store. Rate limits protect system availability, mitigate denial-of-service attempts, and ensure fair resource allocation across user subscription tiers.
 
-GigPilot AI implements rate limiting to prevent abuse and ensure fair usage.
+---
 
-## Configuration
+## Tier-Based Limits Matrix
 
-| Setting | Value |
-|---------|-------|
-| Max Requests | 100 per time window |
-| Time Window | 1 minute |
-| Key Generator | Client IP address |
-| Implementation | `@fastify/rate-limit` |
+Rate limits are evaluated based on user account tier and authenticated API token. Unauthenticated traffic defaults to IP-based rate limiting.
 
-## How It Works
+| Account Tier / Context | Window Size | Max Requests | Storage Engine | Key Strategy |
+|------------------------|-------------|--------------|----------------|--------------|
+| **Public / Unauthenticated** | 1 Minute | 60 requests | Redis | Client IP (`req.ip`) |
+| **Free Plan Users** | 1 Minute | 100 requests | Redis | User ID (`req.user.id`) |
+| **Pro Plan Users** | 1 Minute | 300 requests | Redis | User ID (`req.user.id`) |
+| **Agency Plan Users** | 1 Minute | 1,000 requests | Redis | User ID (`req.user.id`) |
+| **Background Scheduler** | Unlimited | No limit | N/A | `X-Cron-Secret` bypass |
 
-1. Each request is counted per client IP
-2. When the limit is exceeded, subsequent requests receive `429 Too Many Requests`
-3. The counter resets after the time window expires
+---
 
-## Headers
+## HTTP Rate Limit Headers
 
-Rate limit information is included in response headers:
+Every HTTP response includes standard rate limit headers indicating window allowance and remaining requests:
 
-```
+```http
 RateLimit-Limit: 100
-RateLimit-Remaining: 0
+RateLimit-Remaining: 95
 RateLimit-Reset: 1722470460
+Retry-After: 45
 ```
 
-## Exceeding the Limit
+| Header | Description |
+|--------|-------------|
+| `RateLimit-Limit` | Maximum allowed requests in the current 60-second window |
+| `RateLimit-Remaining` | Remaining requests allowed within the current window |
+| `RateLimit-Reset` | Unix timestamp (seconds) when the current window resets |
+| `Retry-After` | Seconds to wait before making another request (sent on `429` errors) |
 
-**Response:**
+---
+
+## Rate Limit Failure Response (HTTP 429)
+
+When a client exceeds their allocated quota within the time window, the server returns an `HTTP 429 Too Many Requests` error:
 
 ```json
 {
   "statusCode": 429,
   "error": "Too Many Requests",
-  "message": "Rate limit exceeded, retry in 58 seconds"
+  "message": "Rate limit exceeded. You have sent too many requests in a short period. Please try again in 45 seconds.",
+  "retryAfterSeconds": 45
 }
 ```
 
-## Best Practices
+---
 
-### Client-Side
+## Client-Side Retry Implementation
 
-- Implement exponential backoff for retries
-- Cache responses when possible
-- Batch requests where applicable
-- Use webhooks instead of polling
+Clients should implement exponential backoff with jitter when encountering `429` status codes:
 
-### Example: Exponential Backoff
+```typescript
+async function fetchWithExponentialBackoff(
+  url: string,
+  options: RequestInit,
+  maxRetries = 4
+): Promise<Response> {
+  let attempt = 0;
 
-```javascript
-async function fetchWithRetry(url, options, maxRetries = 3) {
-  for (let i = 0; i < maxRetries; i++) {
+  while (attempt < maxRetries) {
     const response = await fetch(url, options);
-    
-    if (response.status === 429) {
-      const retryAfter = response.headers.get('Retry-After') || Math.pow(2, i);
-      await new Promise(r => setTimeout(r, retryAfter * 1000));
-      continue;
+
+    if (response.status !== 429) {
+      return response;
     }
-    
-    return response;
+
+    attempt++;
+    const retryAfterHeader = response.headers.get('Retry-After');
+    const delaySeconds = retryAfterHeader 
+      ? parseInt(retryAfterHeader, 10) 
+      : Math.pow(2, attempt) + Math.random();
+
+    console.warn(`[429 Rate Limited] Retrying attempt ${attempt}/${maxRetries} after ${delaySeconds}s`);
+    await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
   }
-  throw new Error('Max retries exceeded');
+
+  throw new Error(`Request failed after ${maxRetries} rate limit retries.`);
 }
 ```
 
-## AI Endpoint Considerations
+---
 
-AI generation endpoints may take longer to process. The rate limit applies to the HTTP request, not the AI processing time.
-
-**Recommendation:** Limit AI generation requests to avoid consuming your credit quota quickly.
-
-## Scheduler Endpoint
-
-The `/api/social/scheduler/run` endpoint is **not rate-limited** as it's intended for automated scheduling. However, it should only be called by the internal job queue or cron.
-
-## Environment-Specific Limits
-
-| Environment | Limit |
-|-------------|-------|
-| Production | 100 req/min per IP |
-| Development | 100 req/min per IP |
-| Testing | Disabled |
-
-## Related
+## Related Documentation
 
 - [Error Handling](ERROR_HANDLING.md)
-- [Authentication](AUTHENTICATION.md)
+- [Authentication Guide](AUTHENTICATION.md)
+- [API Reference](API_REFERENCE.md)

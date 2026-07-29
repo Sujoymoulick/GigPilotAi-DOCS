@@ -1,0 +1,46 @@
+---
+import type { TocItem } from '../lib/markdown';
+
+export interface Props {
+  toc: TocItem[];
+}
+const { toc } = Astro.props;
+---
+
+{toc.length > 0 && (
+  <aside class="hidden xl:block w-60 shrink-0" aria-label="Table of contents">
+    <div class="sticky overflow-y-auto scrollbar-hide" style="top:80px; max-height:calc(100vh - 5rem); padding-right:0.25rem;">
+      <p class="text-[11px] font-semibold uppercase tracking-widest mb-3 px-3" style="color:#52525b;">
+        On this page
+      </p>
+      <nav aria-label="Table of contents">
+        <ul class="space-y-0.5" role="list">
+          {toc.map(item => (
+            <li>
+              <a href={`#${item.id}`} class="toc-link block py-1 px-3 text-[13px] transition-all duration-150 rounded-sm"
+                 style="color:#71717a; border-left:2px solid transparent; text-decoration:none;"
+                 onmouseover="this.style.color='#a1a1aa'; this.style.borderLeftColor='#3f3f46'"
+                 onmouseout="this.style.color='#71717a'; this.style.borderLeftColor='transparent'">
+                {item.text}
+              </a>
+              {item.children.length > 0 && (
+                <ul class="ml-3 space-y-0.5" role="list">
+                  {item.children.map(child => (
+                    <li>
+                      <a href={`#${child.id}`} class="toc-link block py-1 px-3 text-[12px] transition-all duration-150"
+                         style="color:#52525b; border-left:2px solid transparent; text-decoration:none;"
+                         onmouseover="this.style.color='#a1a1aa'; this.style.borderLeftColor='#3f3f46'"
+                         onmouseout="this.style.color='#52525b'; this.style.borderLeftColor='transparent'">
+                        {child.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </aside>
+)}

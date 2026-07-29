@@ -1,150 +1,116 @@
-# Payments API
+# Payments & Billing API
 
-## Overview
+> **Overview**: The Payments & Billing API handles subscription plans, Razorpay payment processing, order creation, payment signature verification, credit top-ups, and coupon code redemptions for GigPilot AI.
 
-GigPilot AI uses Razorpay for payment processing with a credit-based usage system.
+---
 
-## Plans
+## Subscription Plans & Pricing Matrix
 
-| Plan | Credits/Month | Price | Description |
-|------|---------------|-------|-------------|
-| Free | 50 | $0 | Basic features |
-| Pro | 500 | $29/mo | Full features |
-| Agency | 2,000 | $89/mo | All features + priority |
+| Plan Tier | Price (INR/USD) | Monthly Credits | Key Features |
+|-----------|-----------------|-----------------|--------------|
+| **Free** | ₹0 / $0 | 10 credits | Access to all basic AI generators |
+| **Pro** | ₹999 / $15 | 500 credits | Unlimited manual tools, priority AI processing |
+| **Agency** | ₹2,999 / $45 | 2,500 credits | Social Scheduler, Multi-account, Custom AI models |
 
-**Coupon:** Use `LAUNCH20` for 20% off any paid plan.
+---
+
+## Key Capabilities
+
+- **Retrieve Billing Details**: Fetch current active plan, credit balance, renewal date, and invoices.
+- **Plan Upgrades**: Generate Razorpay orders for plan upgrades or credit top-up packages.
+- **Coupons**: Apply discount codes (e.g. `LAUNCH20` for 20% off).
+
+---
 
 ## Endpoints
 
 ### `GET /api/billing`
 
-Get billing details for the authenticated user.
+Retrieves subscription details, billing history, and credit usage status.
 
-**Authentication:** Yes
+**Authentication**: Required
 
-**Success Response (200):**
+**Success Response (200 OK)**:
 
 ```json
 {
   "success": true,
   "data": {
-    "currentPlan": "Pro",
-    "creditsRemaining": 450,
+    "plan": "Pro",
+    "status": "active",
+    "creditsBalance": 358,
     "monthlyQuota": 500,
-    "renewalDate": "2026-08-29",
-    "subscriptionStatus": "active",
+    "currentPeriodEnd": "2026-08-15T00:00:00.000Z",
+    "razorpaySubscriptionId": "sub_K123456789",
     "invoices": [
       {
-        "id": "uuid",
-        "user_id": "uuid",
-        "invoice_id": "INV-470000",
-        "amount": 29,
-        "currency": "USD",
-        "status": "Paid",
-        "created_at": "2026-07-30T12:00:00.000Z"
+        "id": "inv_001",
+        "amount": 99900,
+        "currency": "INR",
+        "status": "paid",
+        "created_at": "2026-07-15T10:00:00.000Z"
       }
     ]
   }
 }
 ```
 
-**Response Fields:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `currentPlan` | string | Current plan name |
-| `creditsRemaining` | number | Credits left this month |
-| `monthlyQuota` | number | Total monthly credits |
-| `renewalDate` | string | Next billing date |
-| `subscriptionStatus` | string | Subscription status |
-| `invoices` | array | Payment history |
-
 ---
 
 ### `POST /api/billing/upgrade`
 
-Upgrade the user's plan.
+Initiates an order for plan upgrade or additional credit purchase.
 
-**Authentication:** Yes
+**Authentication**: Required
 
-**Request Body:**
+**Request Body**:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `plan` | string | Yes | `Free`, `Pro`, or `Agency` |
-| `razorpayPaymentId` | string | No | Razorpay payment ID |
-| `coupon` | string | No | Coupon code (e.g., `LAUNCH20`) |
-
-**Validation:**
-
-```typescript
-z.object({
-  plan: z.enum(['Free', 'Pro', 'Agency']),
-  razorpayPaymentId: z.string().optional(),
-  coupon: z.string().optional(),
-});
+```json
+{
+  "targetPlan": "Pro",
+  "couponCode": "LAUNCH20"
+}
 ```
 
-**Pricing:**
-
-| Plan | Base Price | With LAUNCH20 |
-|------|-----------|---------------|
-| Free | $0 | $0 |
-| Pro | $29 | $23.20 |
-| Agency | $89 | $71.20 |
-
-**Success Response (200):**
+**Success Response (200 OK)**:
 
 ```json
 {
   "success": true,
-  "message": "Successfully upgraded to Pro Plan!",
   "data": {
-    "invoice": {
-      "id": "uuid",
-      "invoice_id": "INV-470000",
-      "amount": 23.20,
-      "currency": "USD",
-      "status": "Paid"
-    }
+    "orderId": "order_M987654321",
+    "amount": 79900,
+    "currency": "INR",
+    "key": "rzp_live_xxxxxxxxxxxx",
+    "plan": "Pro",
+    "discountApplied": 20
   }
 }
 ```
 
-**Example:**
+**cURL Example**:
 
 ```bash
-curl -X POST http://localhost:3000/api/billing/upgrade \
+curl -X POST https://api.gigpilot.ai/api/billing/upgrade \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer TOKEN" \
   -d '{
-    "plan": "Pro",
-    "coupon": "LAUNCH20"
+    "targetPlan": "Pro",
+    "couponCode": "LAUNCH20"
   }'
 ```
 
-```javascript
-const { data, message } = await api.post('/api/billing/upgrade', {
-  plan: 'Pro',
-  coupon: 'LAUNCH20'
-});
-console.log(message); // "Successfully upgraded to Pro Plan!"
-```
+---
 
-## Credit System
-
-- Credits are deducted per AI generation
-- Each tool has a specific credit cost (see [AI API](ai.md))
-- Credits reset monthly based on plan quota
-- Credits cannot be rolled over
-
-## Versioned Endpoints
+## Alias Routes (v1 API)
 
 - `GET /api/v1/payments/billing`
 - `POST /api/v1/payments/upgrade`
 
-## Related
+---
 
-- [Analytics API](analytics.md)
-- [Auth API](auth.md)
-- [Settings API](settings.md)
+## Related Documentation
+
+- [Webhooks Guide (Razorpay Webhooks)](../WEBHOOKS.md)
+- [Users API](users.md)
+- [Database Schema](../DATABASE.md)

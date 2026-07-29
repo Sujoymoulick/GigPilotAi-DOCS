@@ -1,0 +1,22 @@
+---
+// MarkdownContent.astro — renders raw HTML from marked
+export interface Props {
+  html: string;
+}
+const { html } = Astro.props;
+---
+
+<div
+  class="prose prose-starlight dark:prose-invert max-w-none
+         prose-headings:scroll-mt-24
+         prose-img:rounded-xl prose-img:shadow-md
+         prose-table:text-sm"
+  set:html={html}
+/>
+
+<style>
+  /* Code block copy button injection */
+  :global(.prose pre) {
+    position: relative;
+  }
+</style>

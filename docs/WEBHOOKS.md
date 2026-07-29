@@ -1,95 +1,115 @@
-# Webhooks
+# Webhooks Specification
 
-## Current Status
+> **Overview**: Webhooks in GigPilot AI enable real-time asynchronous communication for external events (e.g. Razorpay payment notifications) and outgoing platform event delivery (e.g., social media publishing status updates and AI batch generation completions).
 
-Status: **Planned**
+---
 
-GigPilot AI does not currently implement webhooks. The system uses an internal job queue for asynchronous processing.
+## Active & Supported Webhooks
 
-## Planned Webhook Events
+### 1. Inbound Razorpay Payment Webhook
 
-The following events are planned for future webhook support:
+GigPilot AI listens for inbound webhooks from Razorpay to process payment updates and credit allocations in real-time.
 
-### Authentication
+- **Endpoint**: `POST /api/webhooks/razorpay`
+- **Authentication**: HMAC-SHA256 Signature Header (`X-Razorpay-Signature`)
 
-| Event | Trigger |
-|-------|---------|
-| `user.created` | New user registration |
-| `user.login` | User login |
-| `user.logout` | User logout |
+#### Handled Inbound Events
 
-### AI Generation
+| Event Type | Trigger Condition | System Action |
+|------------|-------------------|---------------|
+| `order.paid` | Successful payment for plan upgrade | Grants subscription tier & credits to user account |
+| `subscription.charged` | Recurring monthly subscription payment | Replenishes monthly credit quota |
+| `payment.failed` | Failed payment attempt | Notifies user via in-app notification |
 
-| Event | Trigger |
-|-------|---------|
-| `generation.completed` | AI generation finished |
-| `generation.failed` | AI generation failed |
-| `credits.depleted` | User credits exhausted |
+#### HMAC Signature Verification Example
 
-### Social Media
+```typescript
+import crypto from 'node:crypto';
 
-| Event | Trigger |
-|-------|---------|
-| `post.published` | Post published to platform |
-| `post.failed` | Post publishing failed |
-| `post.scheduled` | Post scheduled |
-| `account.connected` | Social account connected |
-| `account.disconnected` | Social account disconnected |
+export function verifyRazorpaySignature(
+  rawBody: string,
+  signature: string,
+  secret: string
+): boolean {
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(rawBody)
+    .digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(expectedSignature), Buffer.from(signature));
+}
+```
 
-### Billing
+---
 
-| Event | Trigger |
-|-------|---------|
-| `payment.completed` | Payment successful |
-| `payment.failed` | Payment failed |
-| `subscription.upgraded` | Plan upgraded |
-| `subscription.downgraded` | Plan downgraded |
+## Outgoing Webhooks System (Planned Roadmap)
 
-## Planned Webhook Format
+For outgoing event delivery to third-party integrations, GigPilot AI is developing an outgoing webhook subscription engine.
+
+---
+
+## Planned Event Catalog
+
+### AI & Resource Events
+
+| Event Identifier | Description | Payload Data |
+|------------------|-------------|--------------|
+| `generation.completed` | AI generation task finished | Output text, token counts, execution duration |
+| `generation.failed` | AI model error or failure | Error message, failed prompt payload |
+| `credits.depleted` | Account credit balance reaches zero | User ID, remaining credits count |
+
+### Social Media Hub Events
+
+| Event Identifier | Description | Payload Data |
+|------------------|-------------|--------------|
+| `post.published` | Social post published to target platform | Platform, post URL, published timestamp |
+| `post.failed` | Social post broadcast failed | Error details, retry count, target account ID |
+| `post.scheduled` | Post queued in social scheduler | Schedule ID, target platforms, scheduled timestamp |
+
+---
+
+## Outgoing Webhook Payload Envelope
+
+All outgoing webhook dispatches follow a uniform JSON structure:
 
 ```json
 {
+  "id": "evt_9876543210",
   "event": "post.published",
-  "timestamp": "2026-07-30T12:00:00.000Z",
+  "created_at": "2026-07-30T02:15:00.000Z",
   "data": {
-    "postId": "uuid",
-    "provider": "linkedin",
+    "postId": "sub_123456",
+    "platform": "linkedin",
     "status": "published",
-    "url": "https://linkedin.com/posts/..."
+    "postUrl": "https://linkedin.com/posts/activity-123456789"
   },
   "user": {
-    "id": "uuid",
-    "email": "user@example.com"
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "email": "freelancer@example.com"
   }
 }
 ```
 
-## Planned Webhook Configuration
+---
 
-```json
-{
-  "url": "https://your-app.com/webhooks/gigpilot",
-  "events": ["post.published", "generation.completed"],
-  "secret": "your-webhook-secret"
-}
-```
+## Webhook Security Best Practices
 
-## Planned Security
+1. **Verify Signatures**: Always validate the `X-GigPilot-Signature` HMAC header against your endpoint secret.
+2. **Idempotency Handling**: Store the event `id` to handle duplicate webhook deliveries safely.
+3. **Response Timeout**: Respond within 5 seconds with an `HTTP 200 OK` status to prevent retries.
 
-- HMAC-SHA256 signature verification
-- Retry logic with exponential backoff
-- Webhook secret rotation
-- Event logging
+---
 
-## Current Alternatives
+## Current Polling Alternatives
 
-Until webhooks are implemented, use these alternatives:
+While outgoing client webhooks are in beta, clients can obtain status updates by:
 
-1. **Polling:** Call list endpoints periodically
-2. **Internal Queue:** Use the in-process job queue for server-side events
-3. **Frontend Events:** Listen for state changes in the React components
+- **Polling List Endpoints**: Call `GET /api/social/posts` or `GET /api/notifications` periodically.
+- **WebSocket Feeds**: Listen for live state changes in web clients.
 
-## Related
+---
 
-- [Architecture](ARCHITECTURE.md)
-- [API Reference](API_REFERENCE.md)
+## Related Documentation
+
+- [Payments & Billing API](api/payments.md)
+- [Social API](api/social.md)
+- [Architecture Guide](ARCHITECTURE.md)

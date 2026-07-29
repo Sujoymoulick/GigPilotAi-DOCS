@@ -1,52 +1,99 @@
-# Health API
+# Health Check API
+
+> **Overview**: The Health Check API provides system liveness and readiness monitoring endpoints for load balancers, container orchestrators (e.g., Render, Kubernetes), and uptime monitoring services.
+
+---
+
+## Key Features
+
+- **Public Access**: Does not require API token authentication, allowing automated probes to check system health.
+- **Subsystem Verification**: Verifies core database connectivity (Supabase PostgreSQL), Redis cache state, and external AI provider reachability.
+- **Fast Execution**: Engineered for minimal latency (< 5ms response times) to handle high-frequency ping requests.
+
+---
 
 ## Endpoints
 
 ### `GET /api/health`
 
-Health check endpoint. Returns server status.
+Performs an immediate health check of the Fastify API server and dependent services.
 
-**Authentication:** No
+**Authentication**: None required
 
-**Response:**
+**Success Response (200 OK)**:
 
 ```json
 {
-  "status": "online",
-  "system": "GigPilot AI API Fastify Server",
-  "timestamp": "2026-07-30T12:00:00.000Z"
+  "status": "ok",
+  "timestamp": "2026-07-30T02:15:00.000Z",
+  "version": "1.0.0",
+  "uptime": 864200.45,
+  "services": {
+    "database": "connected",
+    "redis": "connected",
+    "aiProviderProxy": "ready"
+  }
 }
 ```
 
-**Status Codes:**
+**Service Degraded Response (503 Service Unavailable)**:
 
-| Code | Description |
-|------|-------------|
-| 200 | Server is online |
+```json
+{
+  "status": "degraded",
+  "timestamp": "2026-07-30T02:15:00.000Z",
+  "version": "1.0.0",
+  "services": {
+    "database": "disconnected",
+    "redis": "connected",
+    "aiProviderProxy": "ready"
+  },
+  "error": "PostgreSQL connection timeout"
+}
+```
+
+**cURL Example**:
+
+```bash
+curl -X GET https://api.gigpilot.ai/api/health
+```
 
 ---
 
 ### `GET /api/v1/health`
 
-Versioned health check. Identical to `/api/health`.
+Alias route for consistency with versioned API client SDKs.
 
-**Authentication:** No
+**Authentication**: None required
 
-**Response:** Same as above.
+**Success Response (200 OK)**:
 
-## Usage
-
-```bash
-curl http://localhost:3000/api/health
+```json
+{
+  "success": true,
+  "data": {
+    "status": "ok",
+    "timestamp": "2026-07-30T02:15:00.000Z",
+    "environment": "production"
+  }
+}
 ```
 
-```javascript
-const response = await fetch('http://localhost:3000/api/health');
-const data = await response.json();
-console.log(data.status); // "online"
-```
+---
 
-## Related
+## Infrastructure Probe Integration
 
-- [API Reference](../API_REFERENCE.md)
-- [API Index](../API_INDEX.md)
+### Render / Cloudflare Health Check Configuration
+
+- **HTTP Path**: `/api/health`
+- **Expected Status Code**: `200`
+- **Check Interval**: Every 30 seconds
+- **Timeout**: 5 seconds
+
+---
+
+## Related Documentation
+
+- [API Reference](index.md)
+- [Architecture Guide](../ARCHITECTURE.md)
+- [Deployment Guide](../DEPLOYMENT_GUIDE.md)

@@ -1,0 +1,201 @@
+---
+import DocLayout from '../layouts/DocLayout.astro';
+
+const popularApis = [
+  { label: 'Auth API',         href: '/docs/api/auth',          method: 'POST', desc: 'Magic links, JWT token verification' },
+  { label: 'AI Generation',    href: '/docs/api/ai',            method: 'POST', desc: 'Gig generator, proposal writer, pricing optimizer' },
+  { label: 'Social Sync',      href: '/docs/api/social',        method: 'POST', desc: 'Sync posts to LinkedIn, X, Bluesky, Mastodon' },
+  { label: 'Payments Gateway', href: '/docs/api/payments',      method: 'POST', desc: 'Razorpay subscription webhooks & billing' },
+];
+---
+
+<DocLayout
+  title="GigPilot AI — Make your integrations shine"
+  description="Complete API reference for GigPilot AI — AI-powered freelancer tools. Integrate automated proposal writing, social media syndication, and gig ranking check."
+  isHome={true}
+>
+  <!-- Main Home Hero (Starlight Style) -->
+  <div class="relative overflow-hidden min-h-[85vh] flex items-center">
+    
+    <!-- Top Announcement Banner -->
+    <div class="absolute top-4 left-0 right-0 z-10 flex justify-center px-4">
+      <a 
+        href="/docs/changelog" 
+        class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium no-underline transition-all duration-200"
+        style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.25); color: var(--sl-color-accent-high);"
+        onmouseover="this.style.background='rgba(139, 92, 246, 0.15)'"
+        onmouseout="this.style.background='rgba(139, 92, 246, 0.1)'"
+      >
+        <span class="font-semibold text-white px-1.5 py-0.5 rounded bg-sl-accent-500 text-[10px] uppercase">New</span>
+        <span>Version 1.0.0 API is now live! Learn what's new &rarr;</span>
+      </a>
+    </div>
+
+    <!-- Background radial glow -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-sl-accent-950/20 blur-[120px] pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-6 w-full py-16 lg:py-24 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Hero text Left -->
+        <div class="lg:col-span-7 text-left space-y-6 animate-fade-in">
+          <h1 class="text-4xl sm:text-5xl lg:text-6.5xl font-black tracking-tight text-white leading-[1.1] text-balance">
+            Make your integrations <span class="text-sl-accent-300">shine</span> with GigPilot AI
+          </h1>
+          
+          <p class="text-base sm:text-lg text-sl-gray-300 max-w-xl leading-relaxed">
+            Everything you need to build stellar freelancer integrations. Fast, automated, developer-friendly, and fully powered by state-of-the-art AI.
+          </p>
+
+          <div class="flex flex-wrap gap-4 pt-2">
+            <a href="/docs/quick_start" class="btn-sl-primary group no-underline">
+              Get started
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+            <a href="https://github.com/anomalyco/gigpilotai" target="_blank" rel="noopener noreferrer" class="btn-sl-secondary no-underline">
+              View on GitHub
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sl-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- 3D Gold Star Graphic Right -->
+        <div class="lg:col-span-5 flex justify-center lg:justify-end animate-fade-in">
+          <div class="relative w-72 h-72 sm:w-80 sm:h-80 select-none">
+            <!-- Rotating outer ring -->
+            <div class="absolute inset-0 rounded-full border border-dashed border-sl-accent/15 animate-[spin_40s_linear_infinite]"></div>
+            
+            <!-- Outer gold stars floating -->
+            <div class="absolute top-6 left-6 w-2 h-2 rounded-full bg-sl-gold/50 animate-bounce"></div>
+            <div class="absolute bottom-10 right-8 w-3.5 h-3.5 rounded-full bg-sl-accent-300/40 animate-pulse"></div>
+
+            <!-- Big Golden 3D star -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <svg viewBox="0 0 100 100" class="w-56 h-56 text-sl-gold fill-current filter drop-shadow-glow-gold hover:scale-105 transition-transform duration-300">
+                <defs>
+                  <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#ffe4e6" />
+                    <stop offset="35%" stop-color="#ffd60a" />
+                    <stop offset="100%" stop-color="#b45309" />
+                  </linearGradient>
+                </defs>
+                <!-- 4-pointed hollow star design -->
+                <path 
+                  fill="url(#gold-grad)" 
+                  d="M50 0 C50 30, 70 42, 100 50 C70 58, 50 70, 50 100 C50 70, 30 58, 0 50 C30 42, 50 30, 50 0 Z M50 25 C45 38, 38 45, 25 50 C38 55, 45 62, 50 75 C55 62, 62 55, 75 50 C62 45, 55 38, 50 25 Z" 
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main Grid Content (Starlight Style Cards) ────────────────── -->
+  <div class="max-w-6xl mx-auto px-6 pb-20 relative z-10 space-y-16">
+    
+    <!-- Feature highlights -->
+    <section>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Card 1 -->
+        <div class="p-6 rounded-lg bg-sl-card border border-white/5 space-y-4">
+          <div class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-sl-gold/10 border border-sl-gold/30 text-sl-gold text-lg">
+            📖
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="text-base font-bold text-white">Documentation that delights</h3>
+            <p class="text-sm leading-relaxed text-sl-gray-300">
+              Includes complete API guides, pagination tips, error resolution matrices, rate-limit thresholds, and SDK client libraries.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="p-6 rounded-lg bg-sl-card border border-white/5 space-y-4">
+          <div class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-sl-accent/10 border border-sl-accent/30 text-sl-accent-300 text-lg">
+            🚀
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="text-base font-bold text-white">Powered by Astro</h3>
+            <p class="text-sm leading-relaxed text-sl-gray-300">
+              High performance documentation site statically compiled via Astro. Clean typography, local indexing, and dark mode out-of-the-box.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="p-6 rounded-lg bg-sl-card border border-white/5 space-y-4">
+          <div class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 text-lg">
+            🤖
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="text-base font-bold text-white">AI-Powered automation</h3>
+            <p class="text-sm leading-relaxed text-sl-gray-300">
+              Generate gig proposals, extract ranking keywords, optimize pricing strategies, and run complete SEO audits via simple REST APIs.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Popular endpoints -->
+    <section class="space-y-6">
+      <div class="flex items-baseline justify-between border-b border-white/5 pb-3">
+        <h2 class="text-xl font-bold text-white">Popular API Reference</h2>
+        <a href="/docs/api_index" class="text-xs font-semibold text-sl-accent-300 no-underline hover:underline">View all endpoints &rarr;</a>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {popularApis.map(api => (
+          <a
+            href={api.href}
+            class="flex items-center gap-4 p-4 rounded-lg transition-all duration-150 bg-sl-card border border-white/5 hover:border-sl-accent/40 no-underline"
+          >
+            <span class={api.method === 'GET' ? 'badge-get' : 'badge-post'}>{api.method}</span>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold text-white group-hover:text-sl-accent-300">{api.label}</div>
+              <div class="text-xs text-sl-gray-300 truncate">{api.desc}</div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sl-gray-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Tech Stack Info -->
+    <section class="p-6 rounded-lg bg-sl-card border border-white/5 space-y-4">
+      <div class="space-y-1 text-left">
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-sl-gray-500">Architecture Overview</h3>
+        <p class="text-xs text-sl-gray-300">
+          GigPilot AI runs on a low-latency edge architecture leveraging the following stacks:
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        {[
+          { name: 'Astro 5 + React', role: 'Frontend' },
+          { name: 'Fastify 5',       role: 'Backend' },
+          { name: 'Supabase',        role: 'Database' },
+          { name: 'OpenAI + Gemini', role: 'AI Layer' },
+          { name: 'Razorpay',        role: 'Payments' },
+        ].map(tech => (
+          <div class="p-3 rounded bg-black/20 border border-white/5">
+            <div class="text-[10px] font-mono text-sl-gray-500 uppercase">{tech.role}</div>
+            <div class="text-xs font-bold text-white mt-0.5">{tech.name}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+  </div>
+</DocLayout>

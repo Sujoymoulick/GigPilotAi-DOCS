@@ -1,0 +1,91 @@
+---
+// Starlight-styled Footer
+---
+
+<footer style="background: var(--sl-color-bg-sidebar); border-top: 1px solid var(--sl-color-border); padding: 3rem 1.5rem;">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+
+      <!-- Brand -->
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-2.5 mb-3">
+          <!-- Spark Star -->
+          <svg viewBox="0 0 24 24" class="w-5 h-5 text-sl-gold fill-current">
+            <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z" />
+          </svg>
+          <span class="font-bold text-sm text-white">GigPilot AI</span>
+        </div>
+        <p class="text-xs leading-relaxed max-w-xs text-sl-gray-300">
+          AI-powered freelancer toolkit for Fiverr and beyond. Automate proposals, optimize gigs, and sync your social media.
+        </p>
+        <div class="flex gap-2 mt-4">
+          <span class="text-xs px-2 py-1 rounded font-mono border border-white/5 bg-black/25 text-sl-gray-500">API v1.0.0</span>
+          <span class="text-xs px-2 py-1 rounded font-mono border border-white/5 bg-black/25 text-sl-gray-500">Docs v1.0.0</span>
+        </div>
+      </div>
+
+      <!-- Docs links -->
+      <div>
+        <h4 class="text-xs font-semibold uppercase tracking-wider mb-3 text-white">Documentation</h4>
+        <ul class="space-y-2 p-0 list-none m-0">
+          {[
+            { l: 'Introduction',  h: '/docs/introduction' },
+            { l: 'Quick Start',   h: '/docs/quick_start' },
+            { l: 'Authentication',h: '/docs/authentication' },
+            { l: 'API Reference', h: '/docs/api_reference' },
+          ].map(link => (
+            <li>
+              <a href={link.h} class="text-xs no-underline text-sl-gray-300 hover:text-sl-accent-high transition-colors">
+                {link.l}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- External links -->
+      <div>
+        <h4 class="text-xs font-semibold uppercase tracking-wider mb-3 text-white">Resources</h4>
+        <ul class="space-y-2 p-0 list-none m-0">
+          {[
+            { l: 'GitHub',       h: 'https://github.com/anomalyco/gigpilotai', ext: true },
+            { l: 'Website',      h: 'https://gigpilot.ai',                     ext: true },
+            { l: 'Changelog',    h: '/docs/changelog' },
+            { l: 'Report Issue', h: 'https://github.com/anomalyco/gigpilotai/issues', ext: true },
+          ].map(link => (
+            <li>
+              <a href={link.h}
+                 target={link.ext ? '_blank' : undefined}
+                 rel={link.ext ? 'noopener noreferrer' : undefined}
+                 class="text-xs no-underline text-sl-gray-300 hover:text-sl-accent-high transition-colors flex items-center gap-1"
+              >
+                {link.l}
+                {link.ext && (
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                  </svg>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/5">
+      <p class="text-xs text-sl-gray-500">
+        &copy; {new Date().getFullYear()} GigPilot AI. All rights reserved.
+      </p>
+      <div class="flex items-center gap-5">
+        {['Privacy', 'Terms'].map(l => (
+          <a href={`/${l.toLowerCase()}`} class="text-xs no-underline text-sl-gray-500 hover:text-sl-gray-300 transition-colors">
+            {l}
+          </a>
+        ))}
+        <span class="text-xs text-sl-gray-500">Built with Astro + Tailwind</span>
+      </div>
+    </div>
+  </div>
+</footer>

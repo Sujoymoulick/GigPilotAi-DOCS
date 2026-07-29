@@ -1,0 +1,240 @@
+---
+import logoWhite from '../assets/LogoWhite.png';
+import logoBlack from '../assets/logoblack.png';
+
+export interface Props {
+  currentSlug?: string;
+  isHome?:      boolean;
+}
+const { currentSlug, isHome = false } = Astro.props;
+---
+
+<header
+  id="site-header"
+  class="fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-4 lg:px-6 gap-3"
+  style="background: var(--sl-color-bg-header); border-bottom: 1px solid var(--sl-color-border);"
+  role="banner"
+>
+  <!-- Mobile menu toggle -->
+  {!isHome && (
+    <button
+      id="mobile-menu-btn"
+      class="lg:hidden p-2 rounded-md transition-colors text-sl-gray-300 hover:bg-white/5 hover:text-white"
+      aria-label="Toggle navigation"
+      aria-expanded="false"
+      aria-controls="sidebar"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  )}
+
+  <!-- Logo (Image-based with Dark/Light toggle) -->
+  <a href="/" class="flex items-center gap-2.5 shrink-0 no-underline" aria-label="GigPilot AI Docs Home">
+    <img src={logoWhite.src} alt="GigPilot AI Logo" class="h-6 w-auto logo-dark" />
+    <img src={logoBlack.src} alt="GigPilot AI Logo" class="h-6 w-auto logo-light" />
+    <span class="flex items-baseline gap-1.5">
+      <span class="font-bold text-white text-base tracking-tight logo-text">GigPilot AI</span>
+      <span class="text-sl-accent-300 font-semibold text-xs px-1.5 py-0.5 rounded bg-sl-accent-950/40 border border-sl-accent-800/30">Docs</span>
+    </span>
+  </a>
+
+  <div class="hidden sm:block w-px h-5 mx-1 bg-white/10"></div>
+
+  <!-- Version badge -->
+  <a
+    href="/docs/changelog"
+    class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border border-emerald-900/40 bg-emerald-950/20 text-emerald-400 hover:bg-emerald-950/30"
+  >
+    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-slow"></span>
+    v1.0.0
+  </a>
+
+  <!-- Search Bar (Starlight pill) -->
+  <button
+    id="search-btn"
+    class="hidden lg:flex flex-1 max-w-xs items-center gap-2.5 px-3 py-1.5 rounded-full text-xs text-left transition-all duration-150 bg-black/30 border border-white/10 hover:border-sl-accent/50 text-sl-gray-300"
+    aria-label="Search documentation (Ctrl+K)"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 shrink-0 text-sl-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+    </svg>
+    <span class="flex-1">Search</span>
+    <kbd class="text-[10px] px-1.5 py-0.5 rounded border border-white/10 bg-white/5 font-mono text-sl-gray-500">⌘K</kbd>
+  </button>
+
+  <!-- Right Actions -->
+  <div class="ml-auto flex items-center gap-1">
+    
+    <!-- Mobile Search -->
+    <button id="search-btn-mobile" class="lg:hidden p-2 rounded-md text-sl-gray-300 hover:bg-white/5 hover:text-white" aria-label="Search">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+    </button>
+
+    <!-- GitHub Link -->
+    <a
+      href="https://github.com/anomalyco/gigpilotai"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="p-2 rounded-md text-sl-gray-300 hover:bg-white/5 hover:text-white"
+      aria-label="GitHub"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+      </svg>
+    </a>
+
+    <!-- Theme Toggler -->
+    <button
+      id="theme-toggle"
+      class="p-2 rounded-md text-sl-gray-300 hover:bg-white/5 hover:text-white"
+      aria-label="Toggle theme"
+    >
+      <svg id="icon-sun" class="w-4.5 h-4.5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+      </svg>
+      <svg id="icon-moon" class="w-4.5 h-4.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ── Search Modal ─────────────────────────────────────────────────── -->
+<div
+  id="search-modal"
+  class="fixed inset-0 z-[200] hidden items-start justify-center px-4 pt-20"
+  role="dialog" aria-modal="true" aria-label="Search documentation"
+>
+  <div id="search-backdrop" class="absolute inset-0 bg-black/85 backdrop-blur-sm"></div>
+
+  <div class="relative w-full max-w-xl rounded-lg overflow-hidden border border-white/10 bg-sl-sidebar shadow-2xl">
+    <!-- Header -->
+    <div class="flex items-center gap-3 px-4 py-3.5 border-b border-white/5">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0 text-sl-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search documentation..."
+        class="flex-1 bg-transparent outline-none text-sm text-white placeholder-sl-gray-500"
+        style="caret-color: var(--sl-color-accent);"
+        autocomplete="off" spellcheck="false"
+      />
+      <button id="search-close" class="px-2 py-0.5 rounded text-[10px] font-mono border border-white/10 bg-white/5 text-sl-gray-500">esc</button>
+    </div>
+
+    <!-- Results -->
+    <div id="search-results" class="max-h-80 overflow-y-auto p-2 scrollbar-hide">
+      <p class="text-xs text-center py-8 text-sl-gray-500">Start typing to search documentation…</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-4 py-2.5 flex items-center gap-4 text-[10px] border-t border-white/5 text-sl-gray-500">
+      <span class="flex items-center gap-1">
+        <kbd class="px-1 py-0.5 rounded font-mono border border-white/10 bg-white/5">↑↓</kbd> Navigate
+      </span>
+      <span class="flex items-center gap-1">
+        <kbd class="px-1 py-0.5 rounded font-mono border border-white/10 bg-white/5">↵</kbd> Open
+      </span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal    = document.getElementById('search-modal');
+  const input    = document.getElementById('search-input') as HTMLInputElement;
+  const results  = document.getElementById('search-results');
+  const backdrop = document.getElementById('search-backdrop');
+  const closeBtn = document.getElementById('search-close');
+  const openBtns = [document.getElementById('search-btn'), document.getElementById('search-btn-mobile')];
+
+  const empty = () => '<p class="text-xs text-center py-8 text-sl-gray-500">Start typing to search documentation…</p>';
+
+  function openSearch() {
+    modal?.classList.remove('hidden');
+    modal?.classList.add('flex');
+    setTimeout(() => input?.focus(), 50);
+  }
+  function closeSearch() {
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+    if (input) input.value = '';
+    if (results) results.innerHTML = empty();
+  }
+
+  openBtns.forEach(b => b?.addEventListener('click', openSearch));
+  backdrop?.addEventListener('click', closeSearch);
+  closeBtn?.addEventListener('click', closeSearch);
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+    if (e.key === 'Escape' && !modal?.classList.contains('hidden')) closeSearch();
+  });
+
+  // Search index loading
+  let INDEX: Array<{ title: string; href: string; excerpt: string }> = [];
+  fetch('/search-index.json').then(r => r.ok ? r.json() : []).then(d => { INDEX = d; }).catch(() => {});
+
+  input?.addEventListener('input', () => {
+    const q = input.value.toLowerCase().trim();
+    if (!results) return;
+    if (!q) { results.innerHTML = empty(); return; }
+    const hits = INDEX.filter(i => i.title.toLowerCase().includes(q) || i.excerpt.toLowerCase().includes(q)).slice(0, 8);
+    if (!hits.length) {
+      results.innerHTML = `<p class="text-xs text-center py-8 text-sl-gray-500">No results for "<strong>${q}</strong>"</p>`;
+      return;
+    }
+    results.innerHTML = hits.map(h => `
+      <a href="${h.href}" onclick="document.getElementById('search-modal')?.classList.add('hidden')"
+         class="flex flex-col gap-0.5 px-3 py-2 rounded-lg transition-colors cursor-pointer text-sl-gray-300 no-underline hover:bg-white/5 hover:text-white">
+        <span class="text-sm font-medium">${h.title}</span>
+        <span class="text-xs text-sl-gray-500 truncate">${h.excerpt}</span>
+      </a>`).join('');
+  });
+
+  // Theme support
+  function initTheme() {
+    const btn  = document.getElementById('theme-toggle');
+    const sun  = document.getElementById('icon-sun');
+    const moon = document.getElementById('icon-moon');
+    const html = document.documentElement;
+
+    function applyTheme(dark: boolean) {
+      if (dark) {
+        html.classList.remove('light');
+        html.classList.add('dark');
+        sun?.classList.remove('hidden');
+        moon?.classList.add('hidden');
+      } else {
+        html.classList.add('light');
+        html.classList.remove('dark');
+        sun?.classList.add('hidden');
+        moon?.classList.remove('hidden');
+      }
+    }
+
+    const saved = localStorage.getItem('cf-theme');
+    applyTheme(saved !== 'light');
+
+    btn?.addEventListener('click', () => {
+      const isLight = html.classList.contains('light');
+      localStorage.setItem('cf-theme', isLight ? 'dark' : 'light');
+      applyTheme(isLight);
+    });
+  }
+  initTheme();
+</script>
+
+<style>
+  .logo-light { display: none; }
+  .logo-dark  { display: block; }
+  .logo-text  { color: #ffffff; }
+
+  :global(.light) .logo-light { display: block; }
+  :global(.light) .logo-dark  { display: none; }
+  :global(.light) .logo-text  { color: var(--sl-color-text-primary); }
+</style>

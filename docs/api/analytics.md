@@ -1,83 +1,102 @@
 # Analytics API
 
+> **Overview**: The Analytics API provides aggregated performance metrics, usage statistics, credit consumption history, words generated, estimated time saved, and tool breakdown data for the freelancer dashboard.
+
+---
+
+## Key Capabilities
+
+- **Dashboard Aggregates**: Retrieve high-level statistics across all GigPilot AI tools.
+- **Usage History**: 30-day breakdown of AI requests and credit spending.
+- **Productivity Tracking**: Calculate generated word counts and estimated hours saved.
+
+---
+
+## Authentication
+
+All analytics endpoints require authentication using a valid Bearer JWT token.
+
+---
+
+## Data Model
+
+```json
+{
+  "totalGigs": 14,
+  "totalProposals": 52,
+  "totalKeywordsSearched": 89,
+  "creditsUsedMonth": 142,
+  "wordsGenerated": 42150,
+  "timeSavedHours": 32.5,
+  "favoriteTools": [
+    { "tool": "Proposal Generator", "usageCount": 52 },
+    { "tool": "Gig Generator", "usageCount": 14 }
+  ],
+  "dailyUsage": [
+    { "date": "2026-07-29", "credits": 8, "requests": 6 },
+    { "date": "2026-07-30", "credits": 12, "requests": 9 }
+  ]
+}
+```
+
+---
+
 ## Endpoints
 
 ### `GET /api/analytics`
 
-Get dashboard analytics data for the authenticated user.
+Retrieves system analytics and usage totals for the authenticated user.
 
-**Authentication:** Yes
+**Authentication**: Required
 
-**Success Response (200):**
+**Query Parameters**:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `period` | `string` | `30d` | Time window (`7d`, `30d`, `90d`, `1y`, `all`) |
+
+**Success Response (200 OK)**:
 
 ```json
 {
   "success": true,
   "data": {
-    "creditsRemaining": 450,
-    "totalCreditsUsed": 50,
-    "totalWordsGenerated": 12500,
-    "totalTimeSavedMinutes": 300,
-    "favoriteTool": "Proposal Generator",
-    "timeSavedHours": 5,
-    "growthPercentage": 24,
-    "dailyUsage": [
-      {
-        "id": "uuid",
-        "date": "2026-07-30",
-        "credits_used": 10,
-        "words_generated": 2500,
-        "time_saved_minutes": 60,
-        "tool_usage": [
-          { "tool": "Proposal Generator", "count": 3 },
-          { "tool": "Gig Generator", "count": 1 }
-        ]
-      }
-    ],
-    "monthlyUsage": [ ... ],
-    "toolUsage": [
-      { "tool": "Proposal Generator", "count": 15 },
-      { "tool": "Gig Generator", "count": 8 },
-      { "tool": "Keyword Finder", "count": 5 }
-    ]
+    "summary": {
+      "creditsBalance": 250,
+      "creditsUsed": 142,
+      "wordsGenerated": 42150,
+      "timeSavedHours": 32.5
+    },
+    "toolBreakdown": {
+      "gigs": 14,
+      "proposals": 52,
+      "keywords": 89,
+      "pricing": 12,
+      "healthChecks": 8,
+      "portfolio": 5,
+      "socialPosts": 34
+    }
   }
 }
 ```
 
-**Response Fields:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `creditsRemaining` | number | Current credit balance |
-| `totalCreditsUsed` | number | Total credits consumed |
-| `totalWordsGenerated` | number | Total AI-generated words |
-| `totalTimeSavedMinutes` | number | Estimated time saved |
-| `favoriteTool` | string | Most-used tool |
-| `timeSavedHours` | number | Time saved in hours |
-| `growthPercentage` | number | Growth percentage |
-| `dailyUsage` | array | Last 7 days of usage |
-| `monthlyUsage` | array | Last 30 days of usage |
-| `toolUsage` | array | Tool usage breakdown |
-
-**Example:**
+**cURL Example**:
 
 ```bash
-curl http://localhost:3000/api/analytics \
-  -H "Authorization: Bearer TOKEN"
+curl -X GET "https://api.gigpilot.ai/api/analytics?period=30d" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
-```javascript
-const { data } = await api.get('/api/analytics');
-console.log(`Used ${data.totalCreditsUsed} credits`);
-console.log(`Generated ${data.totalWordsGenerated} words`);
-console.log(`Saved ${data.timeSavedHours} hours`);
-```
+---
 
-## Versioned Endpoint
+## Alias Routes (v1 API)
 
 - `GET /api/v1/analytics`
 
-## Related
+---
 
-- [Billing API](payments.md)
+## Related Documentation
+
+- [Users API](users.md)
 - [AI API](ai.md)
+- [Social API](social.md)

@@ -1,110 +1,74 @@
 # Storage API
 
+> **Overview**: The Storage API handles media file uploads, portfolio asset uploads, and social media image storage powered by Cloudflare R2 / Supabase Storage.
+
+---
+
+## Key Capabilities
+
+- **File Uploads**: Upload images, portfolio screenshots, and document attachments up to 10MB.
+- **Bucket Management**: Automatically routing public assets (gig thumbnails, portfolio) and private user documents.
+- **Presigned URLs**: Secure public URL generation for immediate client rendering.
+
+---
+
+## Authentication & Authorization
+
+- **Authentication**: Required via Bearer JWT token.
+- **Quota / Limit Enforcement**: Maximum 10MB per file payload. Allowed mime types: `image/jpeg`, `image/png`, `image/webp`, `image/gif`, `application/pdf`.
+
+---
+
 ## Endpoints
 
 ### `POST /api/storage/upload`
 
-Upload a file to Supabase Storage.
+Uploads a multipart form file or base64 image asset to object storage.
 
-**Authentication:** Yes
+**Authentication**: Required
 
-**Request Body:**
+**Request Format**: `multipart/form-data`
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `filename` | string | Yes | Original filename |
-| `contentType` | string | No | MIME type (default: `image/jpeg`) |
-| `data` | string | Yes | Base64-encoded file content |
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `file` | `binary` | Yes | Target file payload |
+| `bucket` | `string` | No | Storage bucket (`public-assets`, `media-library`, `portfolios`). Default: `media-library` |
 
-**Validation Rules:**
-
-- File size: Max **5 MB**
-- Allowed types: `image/jpeg`, `image/png`, `image/webp`, `image/gif`, `application/pdf`
-
-**Success Response (200):**
+**Success Response (200 OK)**:
 
 ```json
 {
   "success": true,
-  "message": "File uploaded successfully",
   "data": {
-    "path": "user-uuid/1722470400000_profile-photo.jpg",
-    "url": "https://your-project.supabase.co/storage/v1/object/sign/gigpilot-assets/user-uuid/1722470400000_profile-photo.jpg?token=..."
+    "fileId": "98765432-abcd-ef01-2345-6789abcdef01",
+    "filename": "portfolio_thumbnail.png",
+    "url": "https://storage.gigpilot.ai/media-library/123e4567/portfolio_thumbnail.png",
+    "sizeBytes": 458200,
+    "mimeType": "image/png",
+    "created_at": "2026-07-30T02:14:00.000Z"
   }
 }
 ```
 
-**Error Responses:**
-
-| Code | Message |
-|------|---------|
-| 400 | Missing filename or base64 file data |
-| 400 | File exceeds maximum size limit of 5MB |
-| 400 | File type "text/plain" is not supported. Supported: JPEG, PNG, WEBP, GIF, PDF. |
-
-**Example Request:**
+**cURL Example**:
 
 ```bash
-curl -X POST http://localhost:3000/api/storage/upload \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer TOKEN" \
-  -d '{
-    "filename": "profile.jpg",
-    "contentType": "image/jpeg",
-    "data": "base64EncodedData..."
-  }'
+curl -X POST https://api.gigpilot.ai/api/storage/upload \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -F "file=@/path/to/image.png" \
+  -F "bucket=media-library"
 ```
 
-```javascript
-// Convert file to base64
-const file = document.getElementById('file-input').files[0];
-const reader = new FileReader();
-reader.onload = async () => {
-  const base64 = reader.result.split(',')[1];
-  const { data } = await api.post('/api/storage/upload', {
-    filename: file.name,
-    contentType: file.type,
-    data: base64
-  });
-  console.log('Uploaded:', data.url);
-};
-reader.readAsDataURL(file);
-```
+---
 
-```python
-import base64
-
-with open('photo.jpg', 'rb') as f:
-    data = base64.b64encode(f.read()).decode()
-
-res = requests.post('http://localhost:3000/api/storage/upload',
-    headers={'Authorization': f'Bearer {token}'},
-    json={
-        'filename': 'photo.jpg',
-        'contentType': 'image/jpeg',
-        'data': data
-    }
-)
-print(res.json()['data']['url'])
-```
-
-**File Path Structure:**
-
-```
-gigpilot-assets/
-└── {user_id}/
-    └── {timestamp}_{filename}
-```
-
-**Signed URLs:**
-
-Uploaded files are accessible via signed URLs with **24-hour expiry**.
-
-## Versioned Endpoint
+## Alias Routes (v1 API)
 
 - `POST /api/v1/storage/upload`
 
-## Related
+---
 
-- [Supabase](../SUPABASE.md)
-- [Storage Guide](../STORAGE.md)
+## Related Documentation
+
+- [Storage Architecture Guide](../STORAGE.md)
+- [Social API](social.md)
+- [Supabase Setup Guide](../SUPABASE.md)

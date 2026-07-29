@@ -1,8 +1,10 @@
-# GigPilot AI - Documentation
+# GigPilot AI - Documentation Portal
 
-> Official developer documentation for the GigPilot AI platform.
+> **Overview**: Welcome to the official GigPilot AI developer documentation hub. This portal contains complete architectural guides, REST API endpoint specifications, SDK usage examples, database schemas, security audit matrices, and deployment instructions.
 
-## Overview
+---
+
+## System Overview
 
 GigPilot AI is a comprehensive freelancer toolkit powered by artificial intelligence. It provides gig generation, proposal writing, keyword research, pricing optimization, social media management, and more.
 

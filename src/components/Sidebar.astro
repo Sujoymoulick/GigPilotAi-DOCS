@@ -1,0 +1,94 @@
+---
+import type { NavSection } from '../lib/navigation';
+
+export interface Props {
+  nav: NavSection[];
+  currentSlug: string;
+}
+const { nav, currentSlug } = Astro.props;
+
+function isActive(href: string, slug: string): boolean {
+  return href === `/docs/${slug}` || href.endsWith(`/${slug}`);
+}
+---
+
+<nav
+  class="py-6 px-4 flex flex-col gap-6"
+  style="min-height: calc(100vh - 64px);"
+  aria-label="Documentation navigation"
+>
+  <!-- Home & Quick Start -->
+  <div class="space-y-1">
+    <a
+      href="/"
+      class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-sl-gray-300 no-underline hover:bg-white/5 hover:text-white"
+    >
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Home
+    </a>
+    <a
+      href="/docs/quick_start"
+      class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-sl-gray-300 no-underline hover:bg-white/5 hover:text-white"
+    >
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-sl-accent-300">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+      Quick Start
+    </a>
+  </div>
+
+  <div class="h-px bg-white/5 mx-1"></div>
+
+  <!-- Sections List -->
+  <div class="space-y-6">
+    {nav.map((section) => (
+      <div class="space-y-2">
+        <!-- Section title (Starlight Style) -->
+        <button class="flex items-center justify-between w-full text-left px-3 py-1 cursor-default select-none border-none bg-transparent">
+          <span class="text-xs font-semibold tracking-wider text-white">
+            {section.label}
+          </span>
+          <svg class="w-3 h-3 text-sl-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- Nested Items -->
+        <ul class="space-y-0.5 m-0 p-0 list-none" role="list">
+          {section.items.map(item => {
+            const active = isActive(item.href, currentSlug);
+            return (
+              <li>
+                <a
+                  href={item.href}
+                  class={`sidebar-link ${active ? 'active' : ''} no-underline`}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  <span>{item.label}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  <!-- Bottom section links -->
+  <div class="mt-auto pt-6 border-t border-white/5">
+    <a
+      href="https://gigpilot.ai"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors text-sl-gray-500 no-underline hover:text-sl-gray-300 hover:bg-white/5"
+    >
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+        <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+      </svg>
+      Back to main site
+    </a>
+  </div>
+</nav>

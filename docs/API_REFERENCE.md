@@ -1,4 +1,8 @@
-# API Reference
+# REST API Reference
+
+> **Overview**: The API Reference documents global REST conventions, base URLs, request/response JSON envelope formats, authentication header specifications, error status codes, and credit deduction rules across all GigPilot AI endpoints.
+
+---
 
 ## Base URL
 

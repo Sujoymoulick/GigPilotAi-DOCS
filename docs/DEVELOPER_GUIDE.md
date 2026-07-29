@@ -1,6 +1,8 @@
 # GigPilot AI Developer Guide
 
-Welcome to the GigPilot AI SaaS developer codebase. This guide details how to work with the codebase, extend features, and run testing configurations.
+> **Overview**: This developer guide provides architecture standards, repository conventions, code separation principles (routes, controllers, services, repositories), and step-by-step instructions for implementing new features across the monorepo.
+
+---
 
 ## Code Standards & Clean Architecture Rules
 

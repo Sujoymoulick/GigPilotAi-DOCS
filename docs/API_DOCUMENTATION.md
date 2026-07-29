@@ -1,6 +1,8 @@
 # GigPilot AI REST API Documentation
 
-This document describes the API endpoints, request validators, and response structures for the GigPilot AI SaaS backend.
+> **Overview**: This document provides a complete functional reference for the GigPilot AI REST API, describing endpoint payloads, validation rules, authentication header formats, and payload structures for all service categories.
+
+---
 
 ## Response Format
 

@@ -1,4 +1,8 @@
-# Folder Structure
+# Folder Structure Specification
+
+> **Overview**: This specification details the complete monorepo directory tree for GigPilot AI, including backend services, frontend applications, shared npm packages (`@gigpilot/ai`, `@gigpilot/auth`, `@gigpilot/database`), public assets, and Chrome browser extensions.
+
+---
 
 ## Project Root
 

@@ -1,6 +1,8 @@
-# GigPilot AI SaaS Folder Structure Documentation
+# Folder Documentation Guide
 
-This document describes the structure of the GigPilot AI SaaS codebase, with a specific focus on the transformed production-grade Fastify backend.
+> **Overview**: This architectural folder guide outlines the responsibilities of each workspace directory, package abstraction, and backend subsystem layer (Config, Routes, Controllers, Services, Repositories) within the GigPilot AI monorepo.
+
+---
 
 ## Workspace Structure
 

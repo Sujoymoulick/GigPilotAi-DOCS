@@ -1,4 +1,8 @@
-# Changelog
+# Platform Release Changelog
+
+> **Overview**: This changelog documents the complete version history, release notes, new feature additions, security enhancements, and upcoming roadmap milestones for the GigPilot AI platform.
+
+---
 
 ## [1.0.0] - 2026-07-30
 

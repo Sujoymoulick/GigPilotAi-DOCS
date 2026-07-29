@@ -1,0 +1,263 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties — Astro Starlight Palette ────────────── */
+:root {
+  --sl-color-bg:            #0f0e17; /* Main space dark bg */
+  --sl-color-bg-sidebar:    #16141f; /* Sidebar dark bg */
+  --sl-color-bg-header:     #0f0e17; /* Header dark bg */
+  --sl-color-bg-card:       #16141f; /* Card dark bg */
+  --sl-color-border:        rgba(255, 255, 255, 0.1);
+  --sl-color-border-subtle: rgba(255, 255, 255, 0.05);
+  
+  /* Violet / Indigo Accents */
+  --sl-color-accent:        #8b5cf6;
+  --sl-color-accent-high:   #c084fc;
+  --sl-color-accent-low:    rgba(139, 92, 246, 0.15);
+  
+  /* Text */
+  --sl-color-text-primary:  #ffffff;
+  --sl-color-text-muted:    #c3c1d1;
+  --sl-color-text-faint:    #7e7d8d;
+  
+  --sidebar-width:          260px;
+  --header-height:          64px;
+  color-scheme: dark;
+}
+
+/* Light mode overrides */
+.light {
+  --sl-color-bg:            #ffffff;
+  --sl-color-bg-sidebar:    #f8fafc;
+  --sl-color-bg-header:     #ffffff;
+  --sl-color-bg-card:       #f8fafc;
+  --sl-color-border:        #e2e8f0;
+  --sl-color-border-subtle: #f1f5f9;
+  --sl-color-accent:        #6d28d9;
+  --sl-color-accent-high:   #4c1d95;
+  --sl-color-accent-low:    rgba(109, 40, 217, 0.08);
+  --sl-color-text-primary:  #0f172a;
+  --sl-color-text-muted:    #475569;
+  --sl-color-text-faint:    #94a3b8;
+  color-scheme: light;
+}
+
+/* ─── Base ────────────────────────────────────────────────────────── */
+@layer base {
+  * { @apply scroll-smooth; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply font-sans antialiased;
+    background-color: var(--sl-color-bg);
+    color: var(--sl-color-text-muted);
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar        { width: 7px; height: 7px; }
+  ::-webkit-scrollbar-track  { background: transparent; }
+  ::-webkit-scrollbar-thumb  { background: rgba(255, 255, 255, 0.12); border-radius: 99px; }
+  .light ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.12); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--sl-color-accent); }
+
+  ::selection { background: rgba(139, 92, 246, 0.3); color: #fff; }
+}
+
+/* ─── Components ──────────────────────────────────────────────────── */
+@layer components {
+
+  /* Sidebar Links - Starlight style */
+  .sidebar-link {
+    @apply flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-150 cursor-pointer;
+    color: var(--sl-color-text-muted);
+  }
+  .sidebar-link:hover {
+    color: var(--sl-color-text-primary);
+    background-color: rgba(255, 255, 255, 0.04);
+  }
+  .sidebar-link.active {
+    color: #ffffff;
+    background-color: var(--sl-color-accent-low);
+    font-weight: 500;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+  }
+  
+  .light .sidebar-link:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  .light .sidebar-link.active {
+    color: var(--sl-color-accent-high);
+    background-color: var(--sl-color-accent-low);
+    border-color: rgba(109, 40, 217, 0.2);
+  }
+
+  /* Method Badges */
+  .badge-get    { @apply inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-950/80 text-emerald-400 border border-emerald-800/80; }
+  .badge-post   { @apply inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-violet-950/80 text-violet-300 border border-violet-800/80; }
+  .badge-put    { @apply inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-950/80 text-amber-300 border border-amber-800/80; }
+  .badge-patch  { @apply inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-950/80 text-indigo-300 border border-indigo-800/80; }
+  .badge-delete { @apply inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-950/80 text-red-400 border border-red-800/80; }
+
+  /* Admonition Box */
+  .admonition { @apply my-6 rounded-lg border-l-4 px-4 py-4; }
+  .admonition-note    { border-color: #3b82f6; background: rgba(59,130,246,0.06); }
+  .admonition-tip     { border-color: #10b981; background: rgba(16,185,129,0.06); }
+  .admonition-warning { border-color: #ffd60a; background: rgba(255,214,10,0.06); }
+  .admonition-danger  { border-color: #ef4444; background: rgba(239,68,68,0.06); }
+
+  /* Reading Progress Bar */
+  .reading-progress {
+    @apply fixed top-0 left-0 h-[2px] z-50 transition-all duration-75;
+    background: linear-gradient(90deg, var(--sl-color-accent), var(--sl-color-accent-high));
+  }
+
+  /* Code block container */
+  .code-block-wrapper {
+    @apply relative my-6 rounded-lg overflow-hidden border;
+    border-color: var(--sl-color-border);
+    background: var(--sl-color-bg-sidebar);
+  }
+  
+  .code-block-header {
+    @apply flex items-center justify-between px-4 py-2 border-b;
+    border-color: var(--sl-color-border-subtle);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  /* TOC Links */
+  .toc-link {
+    @apply block py-1 px-3 text-[13px] transition-all duration-150 border-l-2 border-transparent;
+    color: var(--sl-color-text-faint);
+  }
+  .toc-link:hover { color: var(--sl-color-text-primary); border-left-color: rgba(255,255,255,0.1); }
+  .toc-link.active {
+    color: var(--sl-color-accent-high);
+    border-left-color: var(--sl-color-accent);
+    font-weight: 500;
+  }
+  
+  .light .toc-link:hover { border-left-color: rgba(0,0,0,0.1); }
+  .light .toc-link.active { color: var(--sl-color-accent); border-left-color: var(--sl-color-accent); }
+
+  /* Starlight Star Gradient Accent */
+  .gradient-text {
+    background: linear-gradient(135deg, #ffffff 0%, var(--sl-color-accent-high) 60%, var(--sl-color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Hero Pill Primary CTA */
+  .btn-sl-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm
+           text-white transition-all duration-200;
+    background: var(--sl-color-accent);
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.2);
+  }
+  .btn-sl-primary:hover {
+    background: var(--sl-color-accent-high);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.45);
+    transform: translateY(-1px);
+  }
+  
+  /* Hero Secondary CTA */
+  .btn-sl-secondary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm
+           transition-all duration-200 border;
+    color: var(--sl-color-text-primary);
+    border-color: var(--sl-color-border);
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .btn-sl-secondary:hover {
+    border-color: var(--sl-color-accent-high);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-1px);
+  }
+}
+
+/* ─── Markdown/Prose Styles ────────────────────────────────────────── */
+.prose h2, .prose h3, .prose h4 { scroll-margin-top: 88px; position: relative; }
+.prose h2:hover .anchor-icon,
+.prose h3:hover .anchor-icon { opacity: 1; }
+
+.anchor-icon { opacity: 0; transition: opacity 0.15s; }
+
+/* Custom styled scrollbars inside codes/pre */
+.prose pre {
+  @apply my-6 text-[13px] leading-relaxed;
+  padding: 1.25rem 1.5rem !important;
+  background: var(--sl-color-bg-sidebar) !important;
+  border: 1px solid var(--sl-color-border) !important;
+  border-radius: 0.5rem !important;
+}
+.prose pre code {
+  background: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+  font-size: inherit !important;
+}
+
+/* Inline code styling */
+.prose :not(pre) > code {
+  background: var(--sl-color-accent-low);
+  color: var(--sl-color-accent-high);
+  @apply px-1.5 py-0.5 rounded text-[0.875em] font-mono font-medium;
+  border: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.light .prose :not(pre) > code {
+  background: var(--sl-color-accent-low);
+  color: var(--sl-color-accent-high);
+  border-color: rgba(109, 40, 217, 0.15);
+}
+
+/* Tables styling */
+.prose table { @apply w-full border-collapse text-[13.5px] my-6; }
+.prose thead th {
+  @apply px-4 py-2.5 text-left font-semibold text-sm border-b;
+  border-color: var(--sl-color-border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--sl-color-text-primary);
+}
+.prose tbody td {
+  @apply px-4 py-3 border-b;
+  border-color: var(--sl-color-border-subtle);
+  color: var(--sl-color-text-muted);
+}
+.prose tbody tr:last-child td { border-bottom: none; }
+.prose tbody tr:hover td { background: rgba(255, 255, 255, 0.01); }
+
+.light .prose thead th { background: rgba(0, 0, 0, 0.02); color: var(--sl-color-text-primary); }
+.light .prose tbody tr:hover td { background: rgba(0, 0, 0, 0.01); }
+
+/* Blockquotes */
+.prose blockquote {
+  @apply my-6 px-4 py-4 rounded-lg not-italic border-l-4;
+  border-color: var(--sl-color-accent);
+  background: var(--sl-color-accent-low);
+}
+.prose blockquote p { color: var(--sl-color-text-muted); margin: 0; }
+
+/* Links */
+.prose a { color: var(--sl-color-accent-high); text-decoration: none; font-weight: 500; }
+.prose a:hover { color: #ffffff; text-decoration: underline; }
+.light .prose a { color: var(--sl-color-accent); }
+.light .prose a:hover { color: var(--sl-color-accent-high); }
+
+/* List bullets */
+.prose ul li::marker { color: var(--sl-color-accent); }
+.prose ol li::marker { color: var(--sl-color-accent); font-weight: 600; }
+
+/* Strict color overrides for high-contrast theme compatibility */
+.prose p, .prose li, .prose table, .prose tr, .prose td {
+  color: var(--sl-color-text-muted) !important;
+}
+.prose h1, .prose h2, .prose h3, .prose h4, .prose strong {
+  color: var(--sl-color-text-primary) !important;
+}

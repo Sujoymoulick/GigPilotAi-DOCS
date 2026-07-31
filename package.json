@@ -30,5 +30,10 @@
     "sharp": "^0.34.5",
     "shiki": "^3.0.0",
     "tailwindcss": "^3.4.19"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "esbuild@0.25.12": true,
+    "sharp@0.34.5": true
   }
 }

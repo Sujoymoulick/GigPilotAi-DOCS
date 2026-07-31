@@ -5,6 +5,9 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'GigPilot AI',
+      customCss: [
+        './src/styles/global.css',
+      ],
       logo: {
         light: './src/assets/logoblack.png',
         dark: './src/assets/LogoWhite.png',

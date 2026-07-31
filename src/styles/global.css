@@ -26,10 +26,15 @@
   --sidebar-width:          260px;
   --header-height:          64px;
   color-scheme: dark;
+
+  /* Custom Category Colors */
+  --link-green:             #34d399;
+  --link-pink:              #f472b6;
+  --link-amber:             #fbbf24;
 }
 
 /* Light mode overrides */
-.light {
+[data-theme="light"], .light {
   --sl-color-bg:            #ffffff;
   --sl-color-bg-sidebar:    #f8fafc;
   --sl-color-bg-header:     #ffffff;
@@ -43,6 +48,11 @@
   --sl-color-text-muted:    #475569;
   --sl-color-text-faint:    #94a3b8;
   color-scheme: light;
+
+  /* Custom Category Colors - Light Mode */
+  --link-green:             #059669;
+  --link-pink:              #db2777;
+  --link-amber:             #d97706;
 }
 
 /* ─── Base ────────────────────────────────────────────────────────── */
@@ -62,7 +72,7 @@
   ::-webkit-scrollbar        { width: 7px; height: 7px; }
   ::-webkit-scrollbar-track  { background: transparent; }
   ::-webkit-scrollbar-thumb  { background: rgba(255, 255, 255, 0.12); border-radius: 99px; }
-  .light ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.12); }
+  [data-theme="light"] ::-webkit-scrollbar-thumb, .light ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.12); }
   ::-webkit-scrollbar-thumb:hover { background: var(--sl-color-accent); }
 
   ::selection { background: rgba(139, 92, 246, 0.3); color: #fff; }
@@ -77,23 +87,24 @@
     color: var(--sl-color-text-muted);
   }
   .sidebar-link:hover {
-    color: var(--sl-color-text-primary);
-    background-color: rgba(255, 255, 255, 0.04);
+    color: #000000 !important;
+    background-color: var(--sl-color-accent-high);
   }
   .sidebar-link.active {
-    color: #ffffff;
-    background-color: var(--sl-color-accent-low);
-    font-weight: 500;
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: #000000 !important;
+    background-color: var(--sl-color-accent-high);
+    font-weight: 700;
+    border: 1px solid rgba(139, 92, 246, 0.5);
   }
   
-  .light .sidebar-link:hover {
-    background-color: rgba(0, 0, 0, 0.04);
+  [data-theme="light"] .sidebar-link:hover, .light .sidebar-link:hover {
+    color: #000000 !important;
+    background-color: rgba(0, 0, 0, 0.08);
   }
-  .light .sidebar-link.active {
-    color: var(--sl-color-accent-high);
+  [data-theme="light"] .sidebar-link.active, .light .sidebar-link.active {
+    color: #000000 !important;
     background-color: var(--sl-color-accent-low);
-    border-color: rgba(109, 40, 217, 0.2);
+    border-color: rgba(109, 40, 217, 0.3);
   }
 
   /* Method Badges */
@@ -141,8 +152,8 @@
     font-weight: 500;
   }
   
-  .light .toc-link:hover { border-left-color: rgba(0,0,0,0.1); }
-  .light .toc-link.active { color: var(--sl-color-accent); border-left-color: var(--sl-color-accent); }
+  [data-theme="light"] .toc-link:hover, .light .toc-link:hover { border-left-color: rgba(0,0,0,0.1); }
+  [data-theme="light"] .toc-link.active, .light .toc-link.active { color: var(--sl-color-accent); border-left-color: var(--sl-color-accent); }
 
   /* Starlight Star Gradient Accent */
   .gradient-text {
@@ -211,7 +222,7 @@
   border: 1px solid rgba(139, 92, 246, 0.15);
 }
 
-.light .prose :not(pre) > code {
+[data-theme="light"] .prose :not(pre) > code, .light .prose :not(pre) > code {
   background: var(--sl-color-accent-low);
   color: var(--sl-color-accent-high);
   border-color: rgba(109, 40, 217, 0.15);
@@ -233,8 +244,8 @@
 .prose tbody tr:last-child td { border-bottom: none; }
 .prose tbody tr:hover td { background: rgba(255, 255, 255, 0.01); }
 
-.light .prose thead th { background: rgba(0, 0, 0, 0.02); color: var(--sl-color-text-primary); }
-.light .prose tbody tr:hover td { background: rgba(0, 0, 0, 0.01); }
+[data-theme="light"] .prose thead th, .light .prose thead th { background: rgba(0, 0, 0, 0.02); color: var(--sl-color-text-primary); }
+[data-theme="light"] .prose tbody tr:hover td, .light .prose tbody tr:hover td { background: rgba(0, 0, 0, 0.01); }
 
 /* Blockquotes */
 .prose blockquote {
@@ -247,8 +258,8 @@
 /* Links */
 .prose a { color: var(--sl-color-accent-high); text-decoration: none; font-weight: 500; }
 .prose a:hover { color: #ffffff; text-decoration: underline; }
-.light .prose a { color: var(--sl-color-accent); }
-.light .prose a:hover { color: var(--sl-color-accent-high); }
+[data-theme="light"] .prose a, .light .prose a { color: var(--sl-color-accent); }
+[data-theme="light"] .prose a:hover, .light .prose a:hover { color: var(--sl-color-accent-high); }
 
 /* List bullets */
 .prose ul li::marker { color: var(--sl-color-accent); }
@@ -260,4 +271,91 @@
 }
 .prose h1, .prose h2, .prose h3, .prose h4, .prose strong {
   color: var(--sl-color-text-primary) !important;
+}
+
+/* ─── Animated Logo & Floating Hero Image ────────────────────────────── */
+@keyframes heroLogoFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+    filter: drop-shadow(0 10px 20px rgba(139, 92, 246, 0.35));
+  }
+  50% {
+    transform: translateY(-14px) rotate(1.5deg) scale(1.03);
+    filter: drop-shadow(0 25px 35px rgba(192, 132, 252, 0.7)) drop-shadow(0 0 15px rgba(56, 189, 248, 0.45));
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+    filter: drop-shadow(0 10px 20px rgba(139, 92, 246, 0.35));
+  }
+}
+
+@keyframes logoGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 22px rgba(192, 132, 252, 0.85)) drop-shadow(0 0 12px rgba(96, 165, 250, 0.6));
+  }
+}
+
+/* Hero Logo Floating Animation (Home Page Hero Only) */
+.hero img,
+.hero-image img,
+[data-hero-image],
+.hero-html img {
+  animation: heroLogoFloat 4s ease-in-out infinite !important;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform-origin: center center !important;
+  cursor: pointer;
+}
+
+.hero img:hover,
+.hero-image img:hover,
+[data-hero-image]:hover {
+  animation-play-state: paused !important;
+  transform: scale(1.08) rotate(3deg) translateY(-8px) !important;
+  filter: drop-shadow(0 30px 45px rgba(168, 85, 247, 0.85)) drop-shadow(0 0 25px rgba(56, 189, 248, 0.75)) !important;
+}
+
+/* Header Navbar Logo - Keep Static without Animation */
+header img,
+.site-title img,
+.site-title svg,
+header .logo img,
+nav img {
+  animation: none !important;
+  filter: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* ─── Starlight Sidebar Active & Hover Link Text Color (Black Text on Hover/Active) ─── */
+aside a:hover,
+aside a:focus,
+aside a[aria-current="page"],
+aside a[aria-current="true"],
+.sidebar-pane a:hover,
+.sidebar-pane a:focus,
+.sidebar-pane a[aria-current="page"],
+.sidebar-pane a[aria-current="true"],
+starlight-sidebar a:hover,
+starlight-sidebar a:focus,
+starlight-sidebar a[aria-current="page"],
+starlight-sidebar a[aria-current="true"],
+.sl-sidebar a:hover,
+.sl-sidebar a[aria-current="page"] {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+aside a:hover span,
+aside a[aria-current="page"] span,
+aside a[aria-current="true"] span,
+.sidebar-pane a:hover span,
+.sidebar-pane a[aria-current="page"] span,
+.sidebar-pane a[aria-current="true"] span,
+starlight-sidebar a:hover span,
+starlight-sidebar a[aria-current="page"] span,
+starlight-sidebar a[aria-current="true"] span {
+  color: #000000 !important;
 }

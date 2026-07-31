@@ -5,19 +5,38 @@ import path from 'node:path';
 // @ts-ignore
 import matter from 'gray-matter';
 
-function getFiles(dir: string, baseDir: string = dir): { relativePath: string; absolutePath: string }[] {
+function getFiles(dir: string, baseDir: string = dir, virtualDir: string = dir): { relativePath: string; absolutePath: string }[] {
   let results: { relativePath: string; absolutePath: string }[] = [];
   if (!fs.existsSync(dir)) return results;
   const list = fs.readdirSync(dir);
   for (const file of list) {
     const filePath = path.join(dir, file);
+    const virtualPath = path.join(virtualDir, file);
     if (file === 'node_modules' || file === '.git') continue;
-    const stat = fs.statSync(filePath);
-    if (stat && stat.isDirectory()) {
-      results = results.concat(getFiles(filePath, baseDir));
+    
+    let isDir = false;
+    let targetPath = filePath;
+    
+    try {
+      const stat = fs.statSync(filePath);
+      isDir = stat.isDirectory();
+      if (!isDir && stat.isFile()) {
+        const content = fs.readFileSync(filePath, 'utf-8').trim();
+        if (content.startsWith('..') && (content.endsWith('docs') || content.endsWith('api') || content.includes('/docs') || content.includes('\\docs'))) {
+          const resolved = path.resolve(path.dirname(filePath), content);
+          if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
+            isDir = true;
+            targetPath = resolved;
+          }
+        }
+      }
+    } catch (e) {}
+
+    if (isDir) {
+      results = results.concat(getFiles(targetPath, baseDir, virtualPath));
     } else if (file.endsWith('.md') || file.endsWith('.mdx')) {
       results.push({
-        relativePath: path.relative(baseDir, filePath),
+        relativePath: path.relative(baseDir, virtualPath).replaceAll('\\', '/'),
         absolutePath: filePath,
       });
     }

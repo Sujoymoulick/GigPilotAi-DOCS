@@ -1,20 +1,26 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import react from '@astrojs/react';
+import mdx from '@astrojs/mdx';
 
 export default defineConfig({
   integrations: [
+    react(),
     starlight({
       title: 'GigPilot AI',
       customCss: [
         './src/styles/global.css',
       ],
+      components: {
+        ThemeSelect: './src/components/ThemeSelect.astro',
+      },
       logo: {
         light: './src/assets/logoblack.png',
         dark: './src/assets/LogoWhite.png',
         replacesTitle: false,
       },
       social: [
-        { icon: 'github', label: 'GitHub', href: 'https://github.com/anomalyco/gigpilotai' }
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/Sujoymoulick/GigPilotAi-DOCS.git' }
       ],
       sidebar: [
         {
@@ -78,5 +84,6 @@ export default defineConfig({
         },
       ],
     }),
+    mdx(),
   ],
 });

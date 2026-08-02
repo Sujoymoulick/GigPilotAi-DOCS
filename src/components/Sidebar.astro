@@ -1,5 +1,6 @@
 ---
 import type { NavSection } from '../lib/navigation';
+import ThemeSelect from './ThemeSelect.astro';
 
 export interface Props {
   nav: NavSection[];
@@ -76,8 +77,14 @@ function isActive(href: string, slug: string): boolean {
     ))}
   </div>
 
+  <!-- Theme Toggle (mobile only — hidden on desktop where header toggle is visible) -->
+  <div class="lg:hidden pt-4 border-t border-white/5 flex items-center justify-between px-3">
+    <span class="text-xs text-sl-gray-400 font-medium">Theme</span>
+    <ThemeSelect />
+  </div>
+
   <!-- Bottom section links -->
-  <div class="mt-auto pt-6 border-t border-white/5">
+  <div class="mt-auto pt-4 border-t border-white/5">
     <a
       href="https://gigpilot.ai"
       target="_blank"

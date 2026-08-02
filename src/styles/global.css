@@ -29,21 +29,162 @@
 }
 
 /* Light mode overrides */
+:root[data-theme="light"],
+html.light,
+html[data-theme="light"],
 .light {
   --sl-color-bg:            #ffffff;
   --sl-color-bg-sidebar:    #f8fafc;
-  --sl-color-bg-header:     #ffffff;
-  --sl-color-bg-card:       #f8fafc;
+  --sl-color-bg-header:     rgba(255, 255, 255, 0.95);
+  --sl-color-bg-card:       #ffffff;
+  --sl-color-bg-nav:        #ffffff;
   --sl-color-border:        #e2e8f0;
-  --sl-color-border-subtle: #f1f5f9;
+  --sl-color-border-subtle: #cbd5e1;
+  
   --sl-color-accent:        #6d28d9;
   --sl-color-accent-high:   #4c1d95;
-  --sl-color-accent-low:    rgba(109, 40, 217, 0.08);
-  --sl-color-text-primary:  #0f172a;
-  --sl-color-text-muted:    #475569;
-  --sl-color-text-faint:    #94a3b8;
+  --sl-color-accent-low:    #f3e8ff;
+  
+  /* Starlight text variable overrides */
+  --sl-color-white:         #090d16;
+  --sl-color-gray-1:        #090d16;
+  --sl-color-gray-2:        #1e293b;
+  --sl-color-gray-3:        #334155;
+  --sl-color-gray-4:        #475569;
+  --sl-color-gray-5:        #cbd5e1;
+  --sl-color-gray-6:        #f1f5f9;
+  --sl-color-black:         #ffffff;
+
+  --sl-color-text-primary:  #090d16;
+  --sl-color-text-muted:    #1e293b;
+  --sl-color-text-faint:    #475569;
+  
   color-scheme: light;
 }
+
+/* Light mode utility & component text color overrides for black/dark text */
+:root[data-theme="light"] body,
+html.light body,
+html[data-theme="light"] body,
+.light body {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+}
+
+:root[data-theme="light"] .text-white,
+html.light .text-white,
+html[data-theme="light"] .text-white,
+.light .text-white {
+  color: #0f172a !important;
+}
+
+:root[data-theme="light"] .text-sl-gray-300,
+html.light .text-sl-gray-300,
+html[data-theme="light"] .text-sl-gray-300,
+.light .text-sl-gray-300 {
+  color: #1e293b !important;
+}
+
+:root[data-theme="light"] .text-sl-gray-400,
+html.light .text-sl-gray-400,
+html[data-theme="light"] .text-sl-gray-400,
+.light .text-sl-gray-400 {
+  color: #334155 !important;
+}
+
+:root[data-theme="light"] .text-sl-gray-500,
+html.light .text-sl-gray-500,
+html[data-theme="light"] .text-sl-gray-500,
+.light .text-sl-gray-500 {
+  color: #475569 !important;
+}
+
+/* Backgrounds in Light mode */
+:root[data-theme="light"] .bg-sl-card,
+html.light .bg-sl-card,
+html[data-theme="light"] .bg-sl-card,
+.light .bg-sl-card {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+:root[data-theme="light"] .bg-sl-sidebar,
+html.light .bg-sl-sidebar,
+html[data-theme="light"] .bg-sl-sidebar,
+.light .bg-sl-sidebar {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+:root[data-theme="light"] .bg-black\/20,
+:root[data-theme="light"] .bg-black\/25,
+:root[data-theme="light"] .bg-black\/30,
+html.light .bg-black\/20,
+html.light .bg-black\/25,
+html.light .bg-black\/30 {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+:root[data-theme="light"] .border-white\/5,
+:root[data-theme="light"] .border-white\/10,
+:root[data-theme="light"] .border-white\/12,
+html.light .border-white\/5,
+html.light .border-white\/10,
+html.light .border-white\/12 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Search bar & modal in light mode */
+:root[data-theme="light"] #search-btn,
+html.light #search-btn {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+:root[data-theme="light"] #search-modal .bg-sl-sidebar,
+html.light #search-modal .bg-sl-sidebar {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+:root[data-theme="light"] #search-input,
+html.light #search-input {
+  color: #0f172a !important;
+}
+
+/* Markdown & Prose headings and text in light mode */
+:root[data-theme="light"] .prose h1,
+:root[data-theme="light"] .prose h2,
+:root[data-theme="light"] .prose h3,
+:root[data-theme="light"] .prose h4,
+:root[data-theme="light"] .prose strong,
+html.light .prose h1,
+html.light .prose h2,
+html.light .prose h3,
+html.light .prose h4,
+html.light .prose strong {
+  color: #0f172a !important;
+}
+
+:root[data-theme="light"] .prose p,
+:root[data-theme="light"] .prose li,
+:root[data-theme="light"] .prose td,
+html.light .prose p,
+html.light .prose li,
+html.light .prose td {
+  color: #1e293b !important;
+}
+
+/* Code block container in light mode */
+:root[data-theme="light"] .prose pre,
+html.light .prose pre {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
 
 /* ─── Base ────────────────────────────────────────────────────────── */
 @layer base {
